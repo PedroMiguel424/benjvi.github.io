@@ -117,3 +117,29 @@ on blog_deploy_commits.author_when = (
 -- only interested in commits after I started hosting the blog on k8s
 where published_post_commits.author_when > '2021/05/03 11:00:00';
 
+create or replace view latest_commit as
+select id
+from blog_repo_commits 
+order by author_when desc 
+limit 1;
+
+create or replace view draft_post_details as
+with first_commit_for_file as (
+  select 
+    file,
+    min(author_when) as first_commit_time
+  from blog_repo_commits
+  left join blog_repo_stats
+  on blog_repo_commits.id = blog_repo_stats.commit_id
+  group by 1
+)
+select
+  commit_id,
+  name,
+  first_commit_time,
+  now() - first_commit_time as draft_age
+from blog_repo_files
+join first_commit_for_file
+on first_commit_for_file.file = blog_repo_files.name
+where blog_repo_files.name ilike '_drafts/%';
+

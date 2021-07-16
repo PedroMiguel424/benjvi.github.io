@@ -36,13 +36,13 @@ from draft_post_details
 join latest_commit 
 on draft_post_details.commit_id=latest_commit.id;
 
+
 select
-  commit_id,
   author_when,
-  count(*),
+  count(*) num_drafts,
   avg(draft_age)
 from draft_post_details
 join blog_repo_commits
 on commit_id = blog_repo_commits.id
-group by commit_id,author_when
+group by author_when
 order by author_when;
