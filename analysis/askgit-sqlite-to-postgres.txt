@@ -1,0 +1,13 @@
+-- first, use askgit to export git data to sqlite file: `askgit export monitoring/askgit-commits-stats-db -e commits -e "select * from commits" -e stats -e "select * from stats"`
+-- also run `askgit export askgit-commits-stats-db -e files -e "select commit_id,name,executable from files"` to get the files table
+-- note, I have not been able to successfully get file content into postgres due to an encoding error: "ERROR Illegal :UTF-8 character starting at position 3"
+-- then load the data into postgres based on the config in this file: `pgloader askgit-sqlite-to-postgres.txt`
+
+load database
+  from 'askgit-commits-stats-db.sqlite3'
+  into pgsql://192.168.1.50:32405/askgit
+
+with create tables
+
+cast type num to timestamptz using sqlite-timestamp-to-timestamp;
+
