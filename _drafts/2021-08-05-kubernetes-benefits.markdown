@@ -4,9 +4,9 @@ title: "The Benefits Of Kubernetes At Home"
 categories: [technology]
 ---
 
-Now that's is so popular, Kubernetes comes in for a lot of criticism in some crowds for being overly complicated and perhaps a distraction from the *real* business of making and running software. Much of this is unfair. It is true there is a certain amount of cargo-culting around it, but there are real benefits to having a platform to run apps on. In particular, the affordances *Kubernetes* offers for running applications can be very helpful.
+Now that's is so popular, Kubernetes comes in for a lot of criticism in some crowds for being overly complicated and perhaps a distraction from the *real* business of making and running software. Much of this is unfair. It is true there is a certain amount of cargo-culting around it, but there are real and significant benefits to having a platform to run apps on. In particular, the affordances *Kubernetes* offers for running applications can be very helpful.
 
-I have a Kubernetes cluster running at home. In fact, that's where this blog is being served from. For self-hosting, it *is* a bit like using a sledgehammer to kill a fly - but *even at home*, Kubernetes does solve some real problems for me. For deploying and running software, it makes some significant improvements on what came before.
+I have a Kubernetes cluster running at home. In fact, that's where this blog is being served from. For self-hosting, it *is* a bit like using a sledgehammer to kill a fly - but even at home, Kubernetes does solve some real problems for me. For deploying and running software, it makes some significant improvements on what came before.
 
 ## Run software on a group of computers
 
@@ -50,7 +50,7 @@ Even for general-purpose, non-platform related tools, the likelihood is that for
 
 ## Package Installation & Management
 
-Let's talk a bit about how those APIs benefit the process of installing and managing packages. It's easy to provide a simple install script for a simple piece of software, but more difficult after you bring in concerns of (1) installing more complicated (distributed!) software (2) a need to (heavily) customize the software and (3) a need for ongoing updates and management of the software. And this is where the declarative approach of Kubernetes really shines.
+Let's talk a bit about how those APIs benefit the process of installing and managing packages. It's easy to provide a simple install script for a simple piece of software, but more difficult after you bring in concerns of (1) installing more complicated (distributed!) software (2) a need to (heavily) customize the software and (3) a need for ongoing updates and management of the software. And this is where moving away from scripts and configuration management to the declarative approach of Kubernetes really pays off.
 
 <!-- this is not a benefit of kubernetes, its of IaC approach -->
 <!-- its benefit is the declarative API, allowing this (effective) approach to updates and customization -->
