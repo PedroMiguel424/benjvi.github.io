@@ -12,13 +12,11 @@ I run a Kubernetes cluster at home, running on Raspberry Pi's, which I use to ru
 - MetalLB
 - Weave Network Plugin
 
-When you run services you also have to worry about keeping them up-to-date, for a few reasons. 
+When you run services you also have to worry about keeping them up-to-date, for a few reasons:
 
-As time passes, more and more CVEs are found for old software, and with that the risk of being hacked multiplies. This is particularly risky for systems accessible from the public internet, as is the case for some services that I run.
-
-Even software that is not vulnerable may also become problematic. If other (vulnerable) components are upgraded around an unchanged piece of software, newer versions may choose to drop compatibility with older APIs, and integrations may break.
-
-Finally, most software is broken on some level. You often run into bugs and feature gaps, where your use case is different from what the authors expected. Many (or at least some) of these issues are fixed in software updates.
+- As time passes, more and more CVEs are found for old software, and with that the risk of being hacked multiplies. This is particularly risky for systems accessible from the public internet, as is the case for some services that I run.
+- Even software that is not vulnerable may also become problematic. If other (vulnerable) components are upgraded around an unchanged piece of software, newer versions may choose to drop compatibility with older APIs, and integrations may break.
+- Finally, most software is broken on some level. You often run into bugs and feature gaps, where your use case is different from what the authors expected. Many (or at least some) of these issues are fixed in software updates.
 
 For these reasons, it's important not just to be able to install the software, but also to be able to easily & reliably update it too.
 
@@ -122,7 +120,7 @@ from package_commit_pair_cause_to_deploy;
 
 Defining these views properly does have some tricky parts, and there's some possibility to find anomalies in the data:
 - In my workflow, a commit to the deploy folder is made (on a branch) immediately after the vendored changes as part of triggered workflows. The view must exclude this commit and instead only look at the timestamp of when the deployment PR is made. To do this, we need to enforce merge commits, and use only those commits to identify deployment time
-- I have changed the deployment process a few times and it can be difficult to compare results between two different processes. It is possible to account for folder restructuring by keeping old & new names in your queries for a few months. I also found that it can be difficult to distinguish between commits that perform package updates and those containing refactoring changes
+- I have changed the deployment process a few times and it can be difficult to compare results between two different processes. It is possible to account for folder restructuring by keeping old & new names in your queries for a few months. I also found that it can be difficult to distinguish between commits that perform package updates and those containing refactoring changes. The only real answer to this is to carefully analyse any anomalous commits that you find.
 
 The last thing we need to do is to create an aggregation of this data so we can track trends over time, but first, let's look at how we can get the number of deployments from these views.
 
@@ -142,7 +140,7 @@ To get the deployment frequency, we just need to choose a time period to measure
 
 # Dashboarding
 
-So, we got to the point of having all the raw data we need, but now we want to track trends within it. For this, we should use a dashboard, so lets start building one with grafana. Before we start, you'll need to set up your postgres data source so the dashboard can query the data.
+We now have all the raw data we need, so we can start building a Grafana dashboard to make it easy to track trends. As a prerequisite to dashboard installation, you'll need to set up your Postgres data source so the dashboard can query the data.
 
 ## Package Lead Time
 
