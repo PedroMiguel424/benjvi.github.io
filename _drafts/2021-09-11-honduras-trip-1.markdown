@@ -8,8 +8,11 @@ Honduras is not very well known as a destination for tourism. Unfortunately, med
 
 I flew from London to Tegucigalpa via New York and Atlanta. There are no direct flights from the UK and all flights going to Honduras from the US depart in the morning, so an overnight layover is required. Despite the allure of a cheeky midnight trip to the 'city that never sleeps', my 22h itinerary was exhausting.
 
-![manhatten at night]({{site.url}}/img/hn/manhatten-layover.jpg)
-![NY pizza]({{site.url}}/img/hn/ny-pizza.jpg)
+<div style="display: flex; justify-content: center;">
+<img class="inlineimg" src="{{site.url}}/img/hn/manhatten-layover.jpg"/>
+<img class="inlineimg" src="{{site.url}}/img/hn/ny-pizza.jpg" />
+<!--style="display:inline-block;max-width:48%;margin-left:auto;margin-right:auto"/>-->
+</div>
 ![jfk at dawn]({{site.url}}/img/hn/dawn-jfk.jpg)
 
 The most recommendable option is to fly direct to Atlanta (Miami/Houston may also be an option) on a longer 26/28h itinerary, giving just enough time to sleep overnight in a hotel. On the return journey, the schedule works out better, having a single short layover for a (somewhat) manageable 16-18h total journey time.
@@ -19,7 +22,8 @@ I found being well-rested to be a good way to prepare for the excitement of the 
 
 Perhaps fortunately for future visitors, this intense landing will no longer be on the cards for arrivals to Honduras. The new airport in Palmerola will open to accomodate international flights as of October 2021. Although I will miss the unique experience of the landing, the new airport should make flights to Honduras more accessible.
 
-[TODO insert youtube landing video]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fDHEnLG2sZc?start=167" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ![on the tarmac at toncontin]({{site.url}}/img/hn/toncontin-runway.jpg)
 
 The interior of the airport at Toncontin is also quite stimulating. On exiting customs you're faced with an enormous scrum of people at arrivals. As Hondurans (and indeed Latinos in general) are tightly-knit, sociable people, its very common for entire extended families to go to the airport and wait excitedly at arrivals for their loved one's arrival. Conversely at departures, there is a similar scrum of people feeling the more mixed emotions of goodbyes.
@@ -34,7 +38,7 @@ For lunch we stop at a restaurant on the banks of the lake Yojoa. They make trad
 
 ![traditional fish and plantain chips]({{site.url}}/img/hn/yojoa-fish.jpg)
 
-By chance, the (resoundingly unsuccessful) Presidential candidate from the Liberal party is dining at the next table. By dining in a rustic spot like this, he presumably aims to show he's a man of the people and at the same time show his pride in what Honduras has to offer.
+By chance, the (eventually resoundingly defeated) presidential candidate from the Liberal party is dining at the next table. By dining in a rustic spot like this, he presumably aims to show he's a man of the people and at the same time show his pride in what Honduras has to offer.
 
 ![Lago Yojoa]({{site.url}}/img/hn/lago-yojoa.jpg)
 This spot by the lake is indeed pride-worthy, its calm and beautiful. I believe on the northern end of the lake there are also some resorts for doing outdoor activities.
@@ -43,7 +47,11 @@ We continue on the road, passing through the larger town of El Progreso. We don'
 
 We eventually arrive, late in the evening, at the town of La Ceiba. Unfortunately we don't see much of the city. In the morning we will leave the car here and take the ferry across to the island of Roatan. 
 
-After a breakfast of baleadas (TODO: explain baleadas)  at the hotel, we depart on the ferry. It's expensive by Honduran standards, at around $60 return. But, its modern and fast.
+We had a quick breakfast of baleadas at the hotel. Baleadas are something close to the national dish of Honduras, a hearty mix of refried beans, salty cheese and sour cream wrapped up in a hand-made flour tortilla. It's a convenient, cheap and very tasty meal. 
+
+![baleada]({{site.url}}/img/hn/baleada.jpg)
+
+After breakfast, we depart on the ferry. It's expensive by Honduran standards, at around $60 return. But, its modern and fast.
 
 Once on the island, we spend time relaxing on the beach at West End, and hand out until the sunset.
 
@@ -63,17 +71,17 @@ I wasn't very excited about the restaurants in general on Roatan, most seemed to
 The next day we visit Little French Key. Its something like an island resort, with paid admission. Once on the island you can just chill out and enjoy the beaches or do some activities.
 
 ![Little French Key]({{site.url}}/img/hn/little-french-key.jpg)
-![Jaguar (TODO: check)]({{site.url}}/img/hn/jaguar.jpg)
+![Jaguar]({{site.url}}/img/hn/jaguar.jpg)
 
-As expected, I was not that impressed with the catering, but the range of activities was very impressive. We enjoyed snorkelling around the island but the standout activity for me was the trip to swim around a reef just outside the key. Thanks must be said to our host Jenifer for inviting us on this trip. The waters around Roatan are rich with healthy reefs and marine life, making a subsequent trip scuba diving very enjoyable. 
+As expected, I was not that impressed with the catering, but the range of activities was very impressive. We enjoyed snorkelling around the island but the standout activity for me was the trip to swim around a reef just outside the key. Thanks must be said to our host Jenifer for inviting us on this trip. The waters around Roatan are rich with healthy reefs and marine life. Roatan is also recommendable for scuba diving, I enjoyed it a lot on subsequent trip. This video gives a nice picture of what the scuba is like there:
 
-[scuba pictures?]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/NsfGAayjM_E?start=102" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-I did find it rather strange to see many cruise passengers lying around all day on the sunlounger, having temporarily decamped from their regular sunlounger on the cruise ship. As they say, different strokes for different folks.
+The one thing I did find strange on Little French Key was the sight of many cruise passengers lying around all day on the sunlounger, having temporarily decamped from their regular sunlounger on the cruise ship. As they say, different strokes for different folks.
 
 This was the end of our time on Roatan. From there, we returned to the mainland and set off on another epic journey across the country to Copan.
 
-Continued in [Part 2 (link TODO)]()
+To be continued in part 2 ...  <!-- TODO: add link -->
 
 
 
