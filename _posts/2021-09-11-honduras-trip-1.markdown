@@ -2,6 +2,7 @@
 layout: post
 title: "Memorable Trips: Visiting Honduras (Pt. 1)"
 categories: []
+hidden: true
 ---
 
 Honduras is not very well known as a destination for tourism. Unfortunately, media coverage of the country mostly focuses on gang-related violence, and so safety concerns deter many visitors. But, if you are able to look past that, there's a lot to enjoy. Hondurans lament that while they have much of the same natural assets as Costa Rica to the south, they have not been able to market it as effectively. I have had the opportunity to visit Honduras a few times with my Hondureña partner, but the most memorable was my first trip, taken in late August 2017.
