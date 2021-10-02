@@ -36,10 +36,10 @@ None of this is easy, and each aspect requires some engineering effort. And when
 To choose appropriate metrics, we can look to the ideas in the world of Continuous Delivery. Even though this we aren't developing the software ourselves, a lot of the same ideas are important.
 
 In particular, the top level metrics for teams looking to improve performance (the DORA metrics) are very relevant:
-- Deployment Frequency
-- Decreased Lead Time for Delivery
-- Decreased Mean Time To Recovery (MTTR) 
-- Increased proportion of successful releases
+- (Increasing) Deployment Frequency
+- (Decreasing) Lead Time for Delivery
+- (Decreasing) Mean Time To Recovery (MTTR) 
+- (Increasing) Proportion of successful releases
 
 Importantly, these are very precise things that we can (in principle) quantitatively measure. At a high level, you would calculate them something like this:
 - *Frequency* = `(number of deployments) / (time period)`
@@ -49,7 +49,7 @@ Importantly, these are very precise things that we can (in principle) quantitati
 
 In broad terms, these four metrics relate to counting and gathering timings over deployment events (Deployment Frequency & Lead Time), and then relating that to counts and timings of service incidents (giving MTTR and Change Failure Rate).
 
-If you are using a GitOps repo, all the information needed to measure *Deployment Frequency* and *Lead Time* can be extracted entirely from the Git history. This is what we're going to dig into in subsequent sections of this post. To help with that, we'll use `askgit`. It's a tool that allows us to query metadata associated with the commits in a git repo via SQL. 
+If you are using a GitOps repo, all the information needed to measure *Deployment Frequency* and *Lead Time* can be extracted entirely from the Git history. This is what we're going to dig into in subsequent sections of this post. To help with that, we'll use `askgit`. It's a CLI tool that allows us to query metadata associated with the commits in a git repo via SQL. 
 
 # Introducing [`askgit`](https://github.com/askgitdev/askgit)
 
@@ -101,9 +101,9 @@ With that in mind, we can go on to measure the cadence of this process, in terms
  
 # Measuring Lead Time
 
-We want to measure patching lead time so we know how long this update process takes. We want the interval between when an updated package was first discovered, to when it was deployed in prod. To make this simpler, we assume ArgoCD works fairly quickly, so its lag in deploying won't be significant and can therefore be ignored. 
+Lead time is the measure of how long this update process takes. This will tell us how long our deployed version lags behind where we want it to be. In general terms, this is the time interval between when an updated package was first discovered, to when it was deployed in prod. 
 
-So the query becomes: "How long does it take for changes to progress from `packages/vendored` to `sync/prod`? To find this out we should look at each package vendoring event, then for each event find the next time the same package was deployed. [ It has to be this way, and not backwards from deploys to vendoring events as there may be multiple vendored versions that are - effectively - all deployed in one deploy ].
+For the workflow here, we will assume ArgoCD works fairly quickly, so its lag in deploying won't be significant and can therefore be ignored. So the query becomes: "How long does it take for changes to progress from `packages/vendored` to `sync/prod`? To find this out we should look at each package vendoring event, then for each event find the next time the same package was deployed. [ It has to be this way, and not backwards from deploys to vendoring events as there may be multiple vendored versions that are - effectively - all deployed in one deploy ].
 
 ![package update events]({{site.url}}/img/package-update-events.png)
 

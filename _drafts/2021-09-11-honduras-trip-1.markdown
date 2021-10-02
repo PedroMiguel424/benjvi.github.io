@@ -1,12 +1,10 @@
 ---
 layout: post
-title: "Visiting Honduras"
+title: "Memorable Trips: Visiting Honduras (Pt. 1)"
 categories: []
 ---
 
-Honduras is not very well known as a destination for tourism. Unfortunately, media coverage of the country mostly focuses on gang-related violence, and so safety concerns deter many visitors. But, if you are able to look past that, there's a lot to enjoy. Hondurans lament that while they have much of the same natural assets as Costa Rica to the south, they have not been able to market it as effectively.
-
-The trip I describe here was taken in late August 2017, planned entirely by my Hondureña partner.
+Honduras is not very well known as a destination for tourism. Unfortunately, media coverage of the country mostly focuses on gang-related violence, and so safety concerns deter many visitors. But, if you are able to look past that, there's a lot to enjoy. Hondurans lament that while they have much of the same natural assets as Costa Rica to the south, they have not been able to market it as effectively. I have had the opportunity to visit Honduras a few times with my Hondureña partner, but the most memorable was my first trip, taken in late August 2017.
 
 I flew from London to Tegucigalpa via New York and Atlanta. There are no direct flights from the UK and all flights going to Honduras from the US depart in the morning, so an overnight layover is required. Despite the allure of a cheeky midnight trip to the 'city that never sleeps', my 22h itinerary was exhausting.
 
@@ -17,11 +15,14 @@ I flew from London to Tegucigalpa via New York and Atlanta. There are no direct 
 The most recommendable option is to fly direct to Atlanta (Miami/Houston may also be an option) on a longer 26/28h itinerary, giving just enough time to sleep overnight in a hotel. On the return journey, the schedule works out better, having a single short layover for a (somewhat) manageable 16-18h total journey time.
 
 ![takeoff from toncontin]({{site.url}}/img/hn/tegus-takeoff.jpg)
-This will leave you well-prepared for the excitement of the landing at Toncontín airport in Tegucigalpa, which is a dramatic one. The plane needs to bank left while flying incredibly low over the city, giving the first close-up view of the houses below. The pilot must judge this turn very accurately because there is no straight approach to the runway. When the turn reaches its apex you're already reaching the runway and they need to get the wheels on the ground ASAP. The runway is just barely long enough for the larger jets (of the type you would arrive on from the US) to come to a stop before running out of road.
+I found being well-rested to be a good way to prepare for the excitement of the landing at Toncontín airport in Tegucigalpa, which is a dramatic one. The plane needs to bank left while flying incredibly low over the city, giving the first close-up view of the houses below. The pilot must judge this turn very accurately because there is no straight approach to the runway. When the turn reaches its apex you're already reaching the runway and they need to get the wheels on the ground ASAP. The runway is just barely long enough for the larger jets (of the type you would arrive on from the US) to come to a stop before running out of road.
 
+Perhaps fortunately for future visitors, this intense landing will no longer be on the cards for arrivals to Honduras. The new airport in Palmerola will open to accomodate international flights as of October 2021. Although I will miss the unique experience of the landing, the new airport should make flights to Honduras more accessible.
+
+[TODO insert youtube landing video]
 ![on the tarmac at toncontin]({{site.url}}/img/hn/toncontin-runway.jpg)
 
-The interior of the airport is also quite stimulating. On exiting customs you're faced with an enormous scrum of people at arrivals. As Hondurans (and indeed Latinos in general) are tightly-knit, sociable people, its very common for entire extended families to go to the airport and wait excitedly at arrivals for their loved one's arrival. Conversely at departures, there is a similar scrum of people feeling the more mixed emotions of goodbyes.
+The interior of the airport at Toncontin is also quite stimulating. On exiting customs you're faced with an enormous scrum of people at arrivals. As Hondurans (and indeed Latinos in general) are tightly-knit, sociable people, its very common for entire extended families to go to the airport and wait excitedly at arrivals for their loved one's arrival. Conversely at departures, there is a similar scrum of people feeling the more mixed emotions of goodbyes.
 
 The next day, we set out to drive across the country to the island of Roatan. This is a long drive, and several stops are required. It should also be noted that careful attention as well as a judicious amount of defensiveness is advisable on the roads in Honduras. 
 
@@ -33,10 +34,10 @@ For lunch we stop at a restaurant on the banks of the lake Yojoa. They make trad
 
 ![traditional fish and plantain chips]({{site.url}}/img/hn/yojoa-fish.jpg)
 
-We also realize that the (ill-fated) Presidential candidate from the Liberal party is dining at the next table. By dining in a rustic spot like this, he can at the same time show he's a man of the people and also show his pride in what Honduras has to offer.
+By chance, the (resoundingly unsuccessful) Presidential candidate from the Liberal party is dining at the next table. By dining in a rustic spot like this, he presumably aims to show he's a man of the people and at the same time show his pride in what Honduras has to offer.
 
 ![Lago Yojoa]({{site.url}}/img/hn/lago-yojoa.jpg)
-This spot by the lake is indeed pride-worthy, its calm and beautiful. I believe on the norther end of the lake there are also some resorts for doing outdoor activities.
+This spot by the lake is indeed pride-worthy, its calm and beautiful. I believe on the northern end of the lake there are also some resorts for doing outdoor activities.
 
 We continue on the road, passing through the larger town of El Progreso. We don't have time to stop as we're running behind schedule. Most cars in Honduras have heavy tinting on the windscreen, which helps with the intense sun during the day (and with privacy). However, this does make nighttime driving more difficult, particularly in rural areas with sub-par road lighting.
 
@@ -70,7 +71,7 @@ As expected, I was not that impressed with the catering, but the range of activi
 
 I did find it rather strange to see many cruise passengers lying around all day on the sunlounger, having temporarily decamped from their regular sunlounger on the cruise ship. As they say, different strokes for different folks.
 
-This was the end of time on Roatan. From there, we returned to the mainland and set off on another epic journey across the country to Copan.
+This was the end of our time on Roatan. From there, we returned to the mainland and set off on another epic journey across the country to Copan.
 
 Continued in [Part 2 (link TODO)]()
 
