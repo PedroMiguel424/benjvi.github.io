@@ -31,7 +31,7 @@ The interior of the airport at Toncontin is also quite stimulating. On exiting c
 
 The next day, we set out to drive across the country to the island of Roatan. This is a long drive, and several stops are required. It should also be noted that careful attention as well as a judicious amount of defensiveness is advisable on the roads in Honduras. 
 
-The first stop is in the town of Siquetepeque, for delicious coffee and *pie de limon* and *pastel de tres leches*.
+The first stop is in the town of Siguatepeque, for delicious coffee and *pie de limon* and *pastel de tres leches*.
 
 ![tres leches picture]({{site.url}}/img/hn/treslechesycafe.jpg)
 
