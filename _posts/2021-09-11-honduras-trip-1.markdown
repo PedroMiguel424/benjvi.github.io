@@ -9,9 +9,9 @@ Honduras is not very well known as a destination for tourism. Unfortunately, med
 
 I flew from London to Tegucigalpa via New York and Atlanta. There are no direct flights from the UK and all flights going to Honduras from the US depart in the morning, so an overnight layover is required. Despite the allure of a cheeky midnight trip to the 'city that never sleeps', my 22h itinerary was exhausting.
 
-<div style="display: flex; justify-content: center;">
-<img class="inlineimg" src="{{site.url}}/img/hn/manhatten-layover.jpg"/>
-<img class="inlineimg" src="{{site.url}}/img/hn/ny-pizza.jpg" />
+<div style="display: flex; justify-content: center; width: 96%; margin-left: auto; margin-right: auto">
+<img class="inlineimg" src="{{site.url}}/img/hn/manhatten-layover.jpg" style="max-width: 49%"/>
+<img class="inlineimg" src="{{site.url}}/img/hn/ny-pizza.jpg" style="max-width: 49%"/>
 <!--style="display:inline-block;max-width:48%;margin-left:auto;margin-right:auto"/>-->
 </div>
 ![jfk at dawn]({{site.url}}/img/hn/dawn-jfk.jpg)
