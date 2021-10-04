@@ -29,4 +29,4 @@ spec:
             env:
             - name: PGDATABASE
               value: askgit
-         restartPolicy: OnFailure
+          restartPolicy: OnFailure
