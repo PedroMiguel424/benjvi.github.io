@@ -78,9 +78,9 @@ create or replace view first_edit as
 create or replace view blog_deploy_commits as 
 select distinct 
   file,id,author_when,message
-from commits
-left join stats
-on stats.commit_id = commits.id
+from blog_repo_commits
+left join blog_repo_stats
+on blog_repo_stats.commit_id = blog_repo_commits.id
 where file ilike 'sync/prod/blog/k8s-blog/%.yml';
 
 create or replace view published_post_commits as 
