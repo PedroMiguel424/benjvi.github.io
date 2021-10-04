@@ -5,7 +5,7 @@
 
 load database
   from 'askgit-commits-stats-db.sqlite3'
-  into pgsql://192.168.1.50:32405/askgit
+  into pgsql://192.168.1.60:32405/askgit
 
 with create tables
 

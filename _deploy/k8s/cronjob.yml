@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: load-askgit-blog-repo-data
+spec:
+  concurrencyPolicy: "Forbid"
+  startingDeadlineSeconds: 100
+  schedule: "03 */6 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            run: load-askgit-blog-repo-data
+        spec:
+          containers:
+          - name: askgit-postgres
+            image: benjvi/askgit-postgres
+            imagePullPolicy: Always
+            command: 
+            - /bin/sh
+            - -c
+            # TODO: only  getting back one 
+            - git clone https://github.com/benjvi/benjvi.github.io; cd benjvi.github.io; psql -c "drop table blog_repo_commits cascade; drop table blog_repo_stats cascade;"; ../askgit export _analysis/askgit-commits-stats-db.sqlite3 -e blog_repo_commits -e "select hash as id,* from commits;" -e blog_repo_stats -e "SELECT commits.hash as "commit_id", stats.file_path as "file", stats.additions, stats.deletions FROM commits, stats('', commits.hash)"; cd _analysis; echo "select count(*) from blog_repo_commits; select count(*) from blog_repo_stats;" | sqlite3 askgit-commits-stats-db.sqlite3; pgloader askgit-sqlite-to-postgres.txt; psql -f "create-views.sql"
+            envFrom:
+            - secretRef:
+                name: postgres-creds
+            # overrides PGDATABASE value set in secret (last specified wins)
+            env:
+            - name: PGDATABASE
+              value: askgit
+         restartPolicy: OnFailure
