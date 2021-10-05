@@ -1,16 +1,16 @@
 create or replace view draft_posts as
 select distinct
-  regexp_replace(name, '^_drafts\/([0-9]{4}-[0-9]{2}-[0-9]{2}-)?', '') as title,
-  name as filepath
-from blog_repo_files
-where name like '_drafts/%';
+  regexp_replace(file, '^_drafts\/([0-9]{4}-[0-9]{2}-[0-9]{2}-)?', '') as title,
+  file as filepath
+from blog_repo_stats
+where file like '_drafts/%';
 
 create or replace view published_posts as
 select distinct 
-  regexp_replace(name, '^_posts\/([0-9]{4}-[0-9]{2}-[0-9]{2}-)?', '') as title,
-  name as filepath
-from blog_repo_files
-where name like '_posts/%';
+  regexp_replace(file, '^_posts\/([0-9]{4}-[0-9]{2}-[0-9]{2}-)?', '') as title,
+  file as filepath
+from blog_repo_stats
+where file like '_posts/%';
 
 
 create or replace view posts_with_drafts as
@@ -78,9 +78,9 @@ create or replace view first_edit as
 create or replace view blog_deploy_commits as 
 select distinct 
   file,id,author_when,message
-from blog_repo_commits
-left join blog_repo_stats
-on blog_repo_stats.commit_id = blog_repo_commits.id
+from commits
+left join stats
+on stats.commit_id = commits.id
 where file ilike 'sync/prod/blog/k8s-blog/%.yml';
 
 create or replace view published_post_commits as 
@@ -135,11 +135,11 @@ with first_commit_for_file as (
 )
 select
   commit_id,
-  name,
+  blog_repo_stats.file as "name",
   first_commit_time,
   now() - first_commit_time as draft_age
-from blog_repo_files
+from blog_repo_stats
 join first_commit_for_file
-on first_commit_for_file.file = blog_repo_files.name
-where blog_repo_files.name ilike '_drafts/%';
+on first_commit_for_file.file = blog_repo_stats.file
+where blog_repo_stats.file ilike '_drafts/%';
 
