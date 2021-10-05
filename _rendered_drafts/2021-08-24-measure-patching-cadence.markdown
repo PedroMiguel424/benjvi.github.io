@@ -4,7 +4,7 @@ title: "Measuring Patching Cadence on Kubernetes with `askgit`"
 categories: [technology]
 ---
 
-![patching dashboard](img/full-patching-dashboard.png)
+![patching dashboard](../img/full-patching-dashboard.png)
 
 I run a Kubernetes cluster at home, running on Raspberry Pi's, which I use to run various services. To make this a useful platform, I run a bunch of supporting third party services, things such as:
 - Prometheus & Grafana
@@ -90,7 +90,7 @@ I also created [a Kubernetes `CronJob`](https://github.com/benjvi/measuring-patc
 
 My end-to-end update process for packages looks like the following:
 
-![package update flow]({{site.ur}}/img/package-update-flow.png)
+![package update flow]({{site.ur}}/../img/package-update-flow.png)
 
 1. There's a vendoring workflow that is scheduled daily, which just runs `vendir sync` and checks-in the result. This adds any new package versions to the `packages/vendored/` folder according to the package specification in `vendir.yml`
 2. Off the back of this, additional workflows are triggered to check-in the manifests to the `sync/prod` folder then push the changes to a branch and raise a PR
@@ -105,7 +105,7 @@ Lead time is the measure of how long this update process takes. This will tell u
 
 For the workflow here, we will assume ArgoCD works fairly quickly, so its lag in deploying won't be significant and can therefore be ignored. So the query becomes: "How long does it take for changes to progress from `packages/vendored` to `sync/prod`? To find this out we should look at each package vendoring event, then for each event find the next time the same package was deployed. [ It has to be this way, and not backwards from deploys to vendoring events as there may be multiple vendored versions that are - effectively - all deployed in one deploy ].
 
-![package update events](img/package-update-events.png)
+![package update events](../img/package-update-events.png)
 
 In practice, this becomes two Materialized Views in Postgres:
 - `package_folder_commits` classifies file changes in commits per-package and per-purpose (vendoring, deploying,etc)
@@ -161,13 +161,13 @@ group by 1
 ```
 Where this gives us the max,min and median lead times for each month. Note that this calculates values per calendar month, not over windowed periods of time. Its not possible to do the latter in plain Postgres, without relying on the [timescaledb extension](https://docs.timescale.com/api/latest/hyperfunctions/time_bucket/). But this simpler way suits our needs anyway. The corresponding grafana panel will look like:
 
-![lead time trend](img/patching-lead-time-trend.png)
+![lead time trend](../img/patching-lead-time-trend.png)
 
 I also included a separate panel just giving the most important figures, the lead time for the current month and the average over the last 3 months.
 
 I found it's also helpful to plot the raw data, so we can see which packages are the outliers. So there are a few different panels on the dashboard relating to lead time:
 
-![lead time panels](img/patching-lead-time-panels.png)
+![lead time panels](../img/patching-lead-time-panels.png)
 
 This is our lead time! Happily my package lead time appears to be trending down. Lets look into frequency.
 
@@ -188,13 +188,13 @@ order by 1
 ```
 
 As before, there are also figures showing the deployment frequency in the current month and over the last three months. In this case, I also found it useful to introduce a second query which breaks out the number of deployments by package:
-![patching frequency](img/patching-freq-panels.png)
+![patching frequency](../img/patching-freq-panels.png)
 
 For additional context, the dashboard also includes the same frequency statistics for the vendoring process:
-![vendoring frequeny](img/vendoring-freq-panels.png)
+![vendoring frequeny](../img/vendoring-freq-panels.png)
 
 It includes a count of all package updates, broken out by package:
-![patching count by package](img/patching-count-by-package.png)
+![patching count by package](../img/patching-count-by-package.png)
 
 Now we have a good set of dashboards to analyse deployment frequency. These figures show patching being consistently done each month, with a few more patches deployed in June due to a need to "catch-up" on some patches not applied in previous months.
 
