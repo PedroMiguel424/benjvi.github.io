@@ -108,8 +108,8 @@ For the workflow here, we will assume ArgoCD works fairly quickly, so its lag in
 ![package update events]({{site.url}}/img/package-update-events.png)
 
 In practice, this becomes two Materialized Views in Postgres:
-- `package_folder_commits` classifies file changes in commits per-package and per-purpose (vendoring, deploying,etc)
-- `package_commit_pair_cause_to_deploy` pairs up vendoring package changes with the subsequent package deploy, and calculates the time difference between the two commits as the `days_between_vendor_and_deploy` column
+- `package_folder_commits`(TODO: link) classifies file changes in commits per-package and per-purpose (vendoring, deploying,etc)
+- `package_commit_pair_cause_to_deploy`(TODO: link) pairs up vendoring package changes with the subsequent package deploy, and calculates the time difference between the two commits as the `days_between_vendor_and_deploy` column
 
 Based on this, we can get the deployment lag for each package update by just querying the view:
 
