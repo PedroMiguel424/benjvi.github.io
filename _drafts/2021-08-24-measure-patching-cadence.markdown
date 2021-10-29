@@ -6,7 +6,7 @@ categories: [technology]
 
 ![patching dashboard]({{site.url}}/img/full-patching-dashboard.png)
 
-I run a Kubernetes cluster at home, running on Raspberry Pi's, which I use to run various services. To augment the platform's capabilities, I run a bunch of supporting third party services, things such as:
+I operate a Kubernetes cluster at home, running on Raspberry Pi's, which hosts various applications. To augment the platform's capabilities, a bunch of supporting third party platform extension services also run on it, things such as:
 - Prometheus & Grafana
 - Gatekeeper
 - MetalLB
@@ -101,7 +101,7 @@ With that in mind, we can go on to measure the cadence of this process, in terms
  
 # Measuring Lead Time
 
-Lead time is the measure of how long this update process takes. This will tell us how long our deployed version lags behind where we want it to be. This is the time interval between when an updated package was first discovered, to when it was deployed in prod. 
+Lead time is the measure of how long this update process takes. This is the most important metric to optimize in patching, as it will tell us how long our deployed version lags behind where we want it to be. If our lead time is more than a few days we may start to incur some of the risks of running outdated software. The total lead time is the time interval between when an updated package was first discovered, to when it was deployed in prod. 
 
 For the workflow here, we will assume ArgoCD works fairly quickly, so its lag in deploying can be ignored. So the query becomes: "How long does it take for changes to progress from `packages/vendored` to `sync/prod`? To find this out we should look at each package vendoring event, then for each event find the next time the same package was deployed. 
 
@@ -126,7 +126,7 @@ The last thing we need to do is to create an aggregation of this data so we can 
 
 # Measuring Deployment Frequency
 
-Deployment frequency is useful to give us some idea of how much deployment work is being done, that is to say, how many times updated packages are being deployed.
+Deployment frequency is useful to give us some idea of how much deployment work is being done, that is to say, how many times updated packages are being deployed. In the context of patching more deploys is not necessarily better, as its not a bad thing if software doesn't *need* patching. Saying that, most teams I've worked with are behind on patching, and at a minimum this metric should show that at least *some* patching is going on.
 
 Specifically, here we want to measure just those deployments that are associated with package updates. There may be deployments that are associated with other events such as configuration changes. Since we already had to match up deploy commits with vendor commits to find lead time, we will only consider deploy commits that were matched up with vendor events. This ensures only deplloyments associated with package updates are counted.
 
