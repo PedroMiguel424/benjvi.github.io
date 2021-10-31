@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Memorable Trips: Visiting Honduras (Pt. 1)"
+title: "Memorable Trips: Visiting Honduras (Pt. 1 - Roatan)"
 categories: []
 hidden: true
 ---
