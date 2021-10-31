@@ -1,0 +1,168 @@
+---
+layout: post
+title: "How I Learned to Stop Worrying and Love jq"
+categories: [technology]
+---
+For years I've been complaining that the jq syntax doesn't make any sense and is difficult to remember. I've even made a few attempts to replace it with other tools. Only now I'm finally coming to terms with the fact that there may not be anything better out there for manipulating JSON. For the core functions of extracting hierarchical JSON from a path-like query, it just doesn't get any simpler or more concise.
+
+I'm also coming to terms with the fact that there are large swathes of the jq language that I may never be able to remember. That's fine, because most of what you would ever need to do can be achieved with a small number of powerful constructs. Here, I'll show some examples of these constructs and how these can be used in DevOps and/or Platform Engineering. Specifically, we'll be using jq to query the Kubernetes API.
+
+### Path queries to extract nested data
+
+9/10 times, what I want to do with jq is to extract a particular field from some combination of nested JSON objects and lists. Like this query, to get the list of labels on Kubernetes pods:
+
+```
+kubectl get pods -o json | jq ".items[].metadata.labels"
+```
+
+Other times, I want to get a field from an item in a nested list, which - in jq -  looks very similar to the previous query. `[]` selects all items in the list, so we just need to add `[]` again at the appropriate point to select all items in the list. Then any subsequent fields we specify will be extracted for every item in that list.
+
+One such query gets a list of all container images from the running pods in Kubernetes (each pod may have multiple containers):
+
+```
+kubectl get pods -o json | jq ".items[].spec.containers[].image"
+```
+
+Here, we first select every item in the list of pods. Then, within each pod, we select every item in `containers`. From there, we can retrieve a particular field from those items. Although this is very simple to do in jq, this is a more complex query. To give some idea of this, in (naive, imperative-style) Python this would now look like
+
+```
+images = []
+for pod in output.items:
+   containers = pod.spec.containers
+   for container in containers:
+     images.add(container.image)
+```
+
+Or in a (similarly plain) functional style, in Clojure this would look like:
+
+```
+(map
+    #(get % "image")
+    (map  
+        #(get-in % ["spec" "containers"]) 
+        (get output "items")
+    )
+)
+```
+
+Although this code can be improved, both snippets were harder to write and less clear. And although this is just a simple example, this will equally be true for many more complex queries too. This gives some idea of the power, and usefulness, of jq.
+
+### Use plenty of object construction 
+
+Most of the time, it's fine just to extract a single field on its own. However, sometimes we want to get a list of fields that relate to each other. For that, we need to use the object construction syntax. So, if we wanted to get the name and namespace of a pod in Kubernetes we would do:
+
+```
+kubectl get pods -o json | jq ".items[].metadata | { labels: .labels, ns: .namespace, name: .name} "
+```
+
+This is using the more explicit syntax, in fact, if we want to keep the keys the same we can do:
+
+```
+kubectl get pods -o json | jq ".items[].metadata | { labels, namespace, name }"
+```
+
+For some reason, my brain always wants to put dots before each of the fields in this syntax, which is why I don't use it much. But, objectively, this seems better.
+
+In these queries, we also introduced the pipe, which works much the same as it does in the shell. The pipe should be used copiously in jq to compose queries. It provides a clear separation of statements and allows easy readability from left to right. This is much nicer than complicating a single query statement with multiple nested statements.
+
+It's also possible to use object construction multiple times in a query, so we can - for example - instead add the details about each container name and image to the pod name:
+
+```
+kubectl get pods -o json | jq ".items[] | { pod_name: .metadata.name, containers: ( .spec.containers | { name, image } )  }" 
+```
+
+Here we are starting to see some complexity creep in, as it is now necessary to embed the query on the containers inside the pod object construction, using normal brackets to wrap the inner query.
+
+### How to `select` just the objects you want
+
+Another thing I find myself wanting to do a lot is to only include items with some particular property set. For that, `select` is very handy, which only returns the items where a supplied expression returns true. For example, to return the list of containers with no resource requests configured, we could run:
+
+```
+kubectl get pods -o json | jq ".items[].spec.containers[] | select(.resources.requests == null) | .name"
+```
+
+Or we could get a list of services of type `LoadBalancer`:
+
+```
+kubectl get svc -o json -A | jq '.items[] | select(.spec.type == "LoadBalancer") | .metadata.name'
+```
+
+Note that it needs to be *double*-quotes around `LoadBalancer` here, jq uses the same datatypes as JSON, which doesn't accept single-quoted strings. 
+
+In the world of Kubernetes, such queries can be a good starting point for building OPA policies, which work in a similar way to jq and are used to enforce rules about specific settings that objects created in a Kubernetes cluster should have.
+
+### There's lots of simple functions available
+
+There's a lot of functions available in jq's language, so for simple transformations, it's often quite easy to do what you want to do by piping part of your query into a function. For example, you can extract private keys and certificates from the base64-encoded value of a secret:
+
+```
+ kubectl get secret my-tls-secret -o json | jq '.data | { key: (.["tls.key"] | @base64d ), cert: (.["tls.crt"] | @base64d ) }'
+```
+
+Returning to the example in the previous section, if we wanted to instead get pods where any container had no resource requests configured, just using `select` would not do the job. We have to check that our expression within the select holds for any container in the pod. This we can do using the `any` function: 
+
+```
+ kubectl get pods -o json -A | jq ".items[] | select([.spec.containers[].resources.requests == null] | any) | .metadata.name"
+```
+
+Or we can use the `all` function to get pods where *all* the containers have no requests set:
+
+```
+ kubectl get pods -o json -A | jq ".items[] | select([.spec.containers[].resources.requests == null] | all) | .metadata.name"
+```
+
+Sometimes function usage can require some wrangling with the shape of the data to give the function what it expects. For this example, we needed to explicitly wrap our select condition in an array, as the `any` and `all` functions expect an array value. 
+
+### Don't do too much with general-purpose transformations and aggregations
+
+I've found anything more than such simple transformations can quickly turn into a big time sink, requiring a lot of fiddling to get it working. It might sometimes be worth it, but I don't find such queries very convenient for ad-hoc use cases. In particular, those functions which change the shape of the data, doing aggregations and groupings, etc, can be tricky to get right. More than once, I've had to give up on a query once I realized that what I wanted to do was much more complex than I initially thought. In many other cases, I find a shell-oriented solution to be easier, augmenting jq with tools like `grep`, `sort`, `uniq` or `comm`. I would even recommend having a look at `babashka`. It's a project running Clojure in the shell to help you write more complex shell programs in a functional way.
+
+### Data Exploration
+
+Having spoken a lot about the shape of data and how to query it, there's one more topic to cover: how you can investigate the shape of your data. In Kubernetes, you can usually use `kubectl explain`, but such explanations are not always available. There are some basic strategies I use with `jq` to explore the data.
+
+When the data is too big, you can select just the first item in the list:
+
+```
+kubectl get pods -o json | jq ".items[0]"
+```
+
+If the item is still too big: you can get just the top-level keys of the object:
+
+```
+kubectl get pods -o json | jq ".items[0] | keys"
+Output:
+[
+  "apiVersion",
+  "kind",
+  "metadata",
+  "spec",
+  "status"
+]
+```
+
+Then you can choose one of the keys to add to the query and repeat until the data is small enough to be manageable, e.g. next you could run:
+
+```
+kubectl get pods -o json | jq ".items[0].spec | keys"
+Output:
+[
+  "apiVersion",
+  "kind",
+  "metadata",
+  "spec",
+  "status"
+]
+```
+
+Another great way to explore JSON data is by using the [gron](https://github.com/tomnomnom/gron) CLI tool. It turns your json into a greppable format of jq-style paths, with the full path printed on every line along with the (primitive) value. The tool also allows turning the resulting lines back to JSON.
+
+### Final Thoughts
+
+This is not a "Javascript: The Good Parts" type of situation:
+
+![Javascript: Proportion of Good Parts]({{site.url}}/img/jq/javascript-the-good-parts.webp)
+
+jq is pretty good at what it was built for. It also has lots of additional features and is also a complete functional programming language. It's just a functional programming language with, at least for some of us, pretty esoteric and difficult to remember syntax. Effort spent really learning about functional programming patterns and the deeper logic of how jq expresses them is effort well-spent, but it will take a lot of time to reach a deep understanding and fluency. 
+
+So, even though someone on the internet (or maybe even your coworkers!) can do everything in jq, it's fine to stick to the basics, take it step-by-step, and also make use of other tools available in the shell when convenient. 
