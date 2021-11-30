@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "The Benefits Of Kubernetes At Home"
+title: "The Benefits Of Kubernetes (At Home)"
 categories: [technology]
 ---
 
-Now that's is so popular, Kubernetes comes in for a lot of criticism in some crowds for being overly complicated and perhaps a distraction from the *real* business of making and running software. Much of this is unfair. It is true there is a certain amount of cargo-culting around it, but there are real and significant benefits to having a platform to run apps on. In particular, the affordances *Kubernetes* offers for running applications can be very helpful.
+Now that its so popular, many people like to give Kubernetes criticism for being overly complicated and (perhaps) a distraction from the *real* business of making and running software. Much of this type of criticism is unfair. It is true there is a certain amount of cargo-culting around it, but there are real and significant benefits to having a platform to run apps on. In particular, the affordances *Kubernetes* offers for running applications can be very helpful.
 
-I have a Kubernetes cluster running at home. In fact, that's where this blog is being served from. For self-hosting, it *is* a bit like using a sledgehammer to kill a fly - but even at home, Kubernetes does solve some real problems for me. For deploying and running software, it makes some significant improvements on what came before.
+I have a Kubernetes cluster running at home. In fact, that's where this blog is being served from. For self-hosting, it *is* a bit like using a sledgehammer to kill a fly - but, even at home, Kubernetes does solve some real problems for me. For deploying and running software, it makes some significant improvements on what came before.
 
 ## Run software on a group of computers
 
@@ -64,7 +64,7 @@ Lets bring in another of those complicating factors. The type of packages that y
 
 Kubernetes packages are composed of YAML files representing the desired state of the various components and configuration that makes up the package. To install the package, we just need to send that set of YAML files to the server, which will converge the desired state to the actual state.
 
- The strict structure of Kubernetes YAML that you use for packages lends itself well to programmatic modification or templating. This is how you can customize packages that you install. There are quite a few different tools that have been developed to manage this process. Tools like `kustomize`, `jsonnet`, `ytt` and `helm` all can help in different scenarios. Proper use of these makes it easy to update packages, even when they have been customized. Automated processes can fetch updated packages and apply a consistent set of customizations, before sending the resulting Kubernetes YAMLs to the Kubernetes API, which will manage rolling out to the new desired state.
+ The strict structure of Kubernetes YAML that you use for packages lends itself well to programmatic modification or templating. This is how you can customize packages that you install. There are quite a few different tools that have been developed to manage this process. Tools like `kustomize`, `jsonnet`, `ytt` and `helm` can all help in different scenarios. Proper use of these makes it easy to update packages, even when they have been customized. Automated processes can fetch updated packages and apply a consistent set of customizations, before sending the resulting Kubernetes YAMLs to the Kubernetes API, which will manage rolling out to the new desired state.
 
 The details of how to do this deserve a post of their own. But the upshot is that, with very little effort I am able to keep packages installed on my cluster patched and up-to-date. It just needs a bit of up-front investment in automation, using those declarative Kubernetes manifests the 'right' way. This means I can stay reasonably secure and can consume bug fixes without the ongoing need to allocate some of my time for maintenance.
 
@@ -75,7 +75,7 @@ This post was initially inspired by [this Rich Hickey talk](https://www.youtube.
 *"Don't build features, solve problems! It's also better to properly solve your problems rather than avoiding them."*
 
 
-While self-hosting is a bit of a hobby, its a way to learn things and have a bit of fun tinkering, I encourage you to go out there and make Kubernetes solve problems for you.
+While self-hosting is a bit of a hobby, its a way to learn things and have a bit of fun tinkering, I encourage you to go out there and make Kubernetes solve problems for you. You'll find it can handle pretty much anything you want to throw at it.
 
-*P.S. If this has got you interested in self-hosting Kubernetes, [this blog post](https://blog.alexellis.io/self-hosting-kubernetes-on-your-raspberry-pi/) is a decent starting point. Hopefully one day I'll finally get around to writing up my setup too.*
+*P.S. If this has got you interested in self-hosting Kubernetes, [this blog post](https://blog.alexellis.io/self-hosting-kubernetes-on-your-raspberry-pi/) is a decent starting point. Hopefully one day soon I'll get around to writing up my setup too.*
 
