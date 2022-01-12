@@ -67,13 +67,13 @@ askgit 'select * from commits'
 To add the details of files changed in each commit, we'll cross-reference the `stats` table. This will allow us to identify commits where a new package was discovered and fetched (i.e. "vendored"). The workflow fetching new packages will create a commit with the changes, checking in packages to the `packages/vendored` directory. This allows us to identify updates to vendored packages: 
 
 ```
-askgit "select * from commits left join stats on stats.commit_id = commits.id where file like 'packages/vendored/'" 
+askgit "select * from commits, stats('', commits.hash) where file_path like 'packages/vendored/%'"
 ```
 
 Similarly, we will get prod deployment events when commits include changed files representing the desired state of prod - which are those under `sync/prod`:
 
 ```
-askgit "select * from commits left join stats on stats.commit_id = commits.id  where file like 'sync/prod'"
+askgit "select * from commits, stats('', commits.hash) where file_path like 'sync/prod/%'"
 ```
 
 The presence of a GitOps tool like ArgoCD makes sure that these updates made to a Git repo produce actual deployment events. 
@@ -81,8 +81,15 @@ The presence of a GitOps tool like ArgoCD makes sure that these updates made to 
 The other handy feature of `askgit` is the ability to export data to an SQLite database, with a command like:
 
 ```
-askgit export monitoring/askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)" 
+askgit export askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)" 
 ```
+
+Because of some schema changes that have happened in askgit over time, we need to add some column remapping so that the dashboard queries will work properly later on:
+
+```
+askgit export askgit-commits-stats-db.sqlite3 -e commits -e "select hash as id,* from commits;" -e stats -e "SELECT commits.hash as "commit_id", stats.file_path as "file", stats.additions, stats.deletions FROM commits, stats('', commits.hash)"
+```
+
 SQLite is well supported by many tools, so once you have an SQLite database, there are lots of tools that can further process the data. I used `pgloader` (with the [appropriate config](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt)) to load the data into Postgres so that we will be able to query it from Grafana. You will need a Postgres server set up, then this config will need to be customized with its connection details. Then, to load the data based on that config you will run:
 
 ```
@@ -216,8 +223,9 @@ To get the dashboard up and running, we have now:
 - Modified the files [`askgit-sqlite-to-postgres.txt`](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt) and/or [`cronjob.yml`](https://github.com/benjvi/measuring-patching-cadence/blob/main/cronjob.yml) with the details of your Postgres and your git repo to be analysed
 - Then loaded data into Postgres:
  - EITHER by manually extracting and loading data by running:
-   - `askgit export monitoring/askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)"` 
-   - `pgloader askgit-sqlite-to-postgres.txt` and then `psql -f "create-package-deploy-view.sql"`
+   - `askgit export askgit-commits-stats-db.sqlite3 -e commits -e "select hash as id,* from commits;" -e stats -e "SELECT commits.hash as "commit_id", stats.file_path as "file", stats.additions, stats.deletions FROM commits, stats('', commits.hash)"` 
+   - `pgloader askgit-sqlite-to-postgres.txt`
+   - `psql -f "create-package-deploy-view.sql"`
  - OR by exracting and loading data periodically by applying the Kubernetes CronJob: `kubectl apply -f cronjob.yml` and waiting for it to run at least once
  
 We may now setup an `askgit` Postgres datasource in Grafana and import the [dashboard](https://grafana.com/grafana/dashboards/14970)
@@ -234,6 +242,6 @@ As mentioned earlier, it may also be advisable to track and think about metrics 
 
 We now have a dashboard that shows how well our process of automated patching is working! At least, how well it's working *in terms of its cadence*.
 
-This dashboard covers both deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments, and are able to track improvements or deterioration over time. Over the months I've been using the dashboard, it has given me a nudge to be more attentive to new patch deployments whenever I have been neglecting them.
+This dashboard covers both deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments, and are able to track improvements or deterioration over time. Over the months I've been using the dashboard, it has indeed given me a nudge to be more attentive to patch deployments whenever I have been neglecting them.
 
 
