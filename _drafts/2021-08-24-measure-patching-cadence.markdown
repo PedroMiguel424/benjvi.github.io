@@ -30,7 +30,7 @@ Unfortunately, designing your system for upgrades requires more care than just i
 - Define some process for keeping secrets in-sync with the deployed packages
 - If you have multiple environments, define a process for rolling out updates sequentially to those environments, and for giving the appropriate environment-specific parameters
 
-None of this is easy, and each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices, and to know our efforts are achieving what we want. Namely, that upgrades are applied more quickly when they are available. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
+None of this comes for free - each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices, and to know our efforts are achieving what we want. Namely, that upgrades are applied more quickly when they are available. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
 
 # Measurement
 
@@ -42,7 +42,7 @@ In particular, the so-called [DORA (DevOps Research and Asseessment) metrics](ht
 - (Decreasing) Mean Time To Recovery (MTTR) 
 - (Increasing) Proportion of successful releases
 
-Importantly, these are very precise things that we can (in principle) quantitatively measure. At a high level, you would calculate them something like this:
+Importantly, these are precise things that we can quantitatively measure. At a high level, you would calculate them something like this:
 - *Frequency* = `(number of deployments) / (time period)`
 - *Lead time* = `(time of production deployment) - (time of associated code commit)`
 - *MTTR* = `(time an incident began) - (time an incident ended)`
@@ -50,7 +50,11 @@ Importantly, these are very precise things that we can (in principle) quantitati
 
 In broad terms, these four metrics relate to (1) counting and gathering timings over deployment events (Deployment Frequency & Lead Time) and (2) relating those deployment events to counts and timings of service incidents (MTTR & Change Failure Rate).
 
-Using a GitOps repo, you can measure *Deployment Frequency* and *Lead Time* based entirely on the Git history. This is what we're going to dig into in subsequent sections of this post. To help with that, we'll use `askgit`. It's a CLI tool to query git repo history via SQL. 
+Using a GitOps repo, you can measure *Deployment Frequency* and *Lead Time* based entirely on the Git history. This is what we're going to dig into in subsequent sections of this post. 
+
+Before that, a word of warning. In the Continuous Delivery model, we want to automate delivery to go fast, but also to eliminate errors. Using these metrics to go faster without a focus on also releasing more safely could lead to *worse* reliability. So, for a *complete* picture of your delivery performance, it is always recommended to also track measurements of deployment risk via the MTTR and Change Failure Rate metrics. These would be measured using data from your Incident Management system. 
+
+With that said, lets dig into what git can tell us about our deployment performance. To help us with this, we'll use `askgit`. It's a CLI tool to query git repo history via SQL. 
 
 # Introducing [`askgit`](https://github.com/askgitdev/askgit)
 
@@ -60,7 +64,7 @@ Exposing the data in your git history means you can ask all different sorts of q
 askgit 'select * from commits'
 ```
 
-To add the details of files changed in each commit, we'll cross-reference the `stats` table. This will allow us to identify commits where a new package was discovered and fetched (or vendored). The workflow fetching new packages will create a commit with the changes, checking in packages to the `packages/vendored` directory. This allows us to identify updates to vendored packages: 
+To add the details of files changed in each commit, we'll cross-reference the `stats` table. This will allow us to identify commits where a new package was discovered and fetched (i.e. "vendored"). The workflow fetching new packages will create a commit with the changes, checking in packages to the `packages/vendored` directory. This allows us to identify updates to vendored packages: 
 
 ```
 askgit "select * from commits left join stats on stats.commit_id = commits.id where file like 'packages/vendored/'" 
@@ -120,16 +124,16 @@ from package_commit_pair_cause_to_deploy;
 ```
 
 Defining these views does have some tricky parts, and there's some possibility to find anomalies in the data:
-- In my workflow, a commit to the deploy folder is made (on a branch) immediately after the vendored changes as part of triggered workflows. The view must exclude this commit and instead only look at the timestamp of when the deployment PR is made. To do this, we need to enforce merge commits, and use only those commits to identify deployment time
+- In my workflow, a commit to the deploy folder is made (on a branch) immediately after the vendored changes as part of triggered workflows. The view must exclude this commit and instead only look at the timestamp of when the deployment PR is made. To do this, we need to *enforce merge commits*, and use only those commits to identify deployment time
 - It can be difficult to consistently compare results when the deployment process changes. I did manage to account for some folder restructuring I did by keeping old & new names in the queries for a few months. However, in general, commits containing refactoring changes have been difficult to handle. The only real answer I found is to individually analyse any anomalous commits.
 
 The last thing we need to do is to create an aggregation of this data so we can track trends over time, but first, let's look at how we can get the number of deployments from these views.
 
 # Measuring Deployment Frequency
 
-Deployment frequency is useful to give us some idea of how much deployment work is being done, that is to say, how many times updated packages are being deployed. In the context of patching more deploys is not necessarily better, as its not a bad thing if software doesn't *need* patching. Saying that, most teams I've worked with are behind on patching, and at a minimum this metric should show that at least *some* patching is going on.
+Deployment frequency is useful to give us some idea of how much deployment work is being done, that is to say, how many times updated packages are being deployed. In the context of patching more deploys is not necessarily better, as its not a bad thing if software doesn't *need* patching. Saying that, most teams I've worked with are always behind on patching, and at a minimum this metric should show that at least *some* patching is going on.
 
-Specifically, here we want to measure just those deployments that are associated with package updates. There may be deployments that are associated with other events such as configuration changes. Since we already had to match up deploy commits with vendor commits to find lead time, we will only consider deploy commits that were matched up with vendor events. This ensures only deplloyments associated with package updates are counted.
+Specifically, here we want to measure just those deployments that are associated with package updates. There may be deployments that are associated with other events such as configuration changes. Since we already had to match up deploy commits with vendor commits to find lead time, we will only consider deploy commits that were matched up with vendor events. This ensures only deployments associated with package updates are counted.
 
 Once the data has been filtered, count the number of unique deploy commits. We can do this based on the views defined in the last section, with the following query:
 
@@ -199,12 +203,18 @@ It includes a count of all package updates, broken out by package:
 
 Now we have a good set of dashboards to analyse deployment frequency. These figures show patching being consistently done each month, with a few more patches deployed in June due to a need to "catch-up" on some patches not applied in previous months.
 
+# Process Bypass
+
+The dashboard now contains the main metrics we wanted to measure, so now we can put our minds to the limitations of our measurements, and how they fit into a broader monitoring strategy.
+
+Here we are only measuring packages that are deployed or patched through a defined, automated, process. Any packages deployed outside of this process will not be considered. Therefore, tools that monitor specific properties for all items on the runtime system can be a useful complement to these measurements, providing assurances for properties like version freshness, number of CVEs and allowing to make some judgements on overall vulnerability. To highlight this, the dashboard includes a panel using the [kube-trivy-exporter](https://github.com/kaidotdev/kube-trivy-exporter) to display the number of images with critical CVEs.
+
 # Conclusion
 
 We now have a dashboard that shows how well our process of automated patching is working! At least, how well it's working *in terms of its cadence*.
 
-This dashboard covers both Deployment lead time and deployment frequency, making up half of the DORA metrics (link: TODO). So we know now about the cadence of our deployments. We are able to track improvements or deterioration over time. We still don't necessarily know about their riskiness. It would be interesting to explore how these queries can be augmented with additional monitoring data to measure Deployment Success Rate and MTTR, which is the other half of the picture. In the Continuous Delivery model, we want to automate delivery to go fast, but also to eliminate errors. Going faster without a focus on releasing more safely can lead to a less reliable service.
+This dashboard covers both Deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments. We are able to track improvements or deterioration over time. Over the months I've been using the dashboard it has given me a nudge to be more attentive to new patch deployments whenever I have been neglecting them.
 
-Another important angle to look at is the completeness of the data. In the queries we used in this post, we used our knowledge about the structure of the deployment process to gather data. However, this cannot tell us about the coverage of the deployment process. Is the process working correctly for every package, and is the process even used for every package? Are there packages installed outside this process? Tools that monitor specific properties for all items on the runtime system can be a useful complement to these measurements, providing assurances for properties like version freshness, number of CVEs and (relatedly) an overall vulnerability score.
+The Grafana dashboard built in this post can be imported from [here](https://grafana.com/grafana/dashboards/14970), using a Postgres datasource called `askgit`.
 
-The Grafana dashboard built in this post can be imported from [here](https://grafana.com/grafana/dashboards/14970), and uses a Postgres datasource called `askgit`.
+
