@@ -215,10 +215,10 @@ To get the dashboard up and running, we have now:
 
 - Modified the files [`askgit-sqlite-to-postgres.txt`](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt) and/or [`cronjob.yml`](https://github.com/benjvi/measuring-patching-cadence/blob/main/cronjob.yml) with the details of your Postgres and your git repo to be analysed
 - Then loaded data into postgres:
- - EITHER by manually extracted and loading data by running:
+ - EITHER by manually extracting and loading data by running:
    - `askgit export monitoring/askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)"` 
    - `pgloader askgit-sqlite-to-postgres.txt` and then `psql -f "create-package-deploy-view.sql"`
- - OR by Exacting and loading data periodically by applying the Kubernetes CronJob: `kubectl apply -f cronjob.yml` and waiting for it to run at least once
+ - OR by exracting and loading data periodically by applying the Kubernetes CronJob: `kubectl apply -f cronjob.yml` and waiting for it to run at least once
  
 We may now setup an `askgit` postgres datasource in Grafana and import the [dashboard](https://grafana.com/grafana/dashboards/14970)
 
