@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Measuring Patching Cadence on Kubernetes with `askgit`"
+title: "Measuring Patching Cadence on Kubernetes with `askgit` and Postgres"
 categories: [technology]
 ---
 
@@ -21,7 +21,7 @@ When you run services you also have to worry about keeping them up-to-date, for 
 
 For these reasons, it's important not just to install the software, but also to keep it updated.
 
-# Upgradeable
+# Upgrades
 
 Unfortunately, designing your system for upgrades requires more care than just installing a package. You should:
 - Keep track of the current state of your infrastructure using Infrastructure as Code, aka package manifest YAML files checked-in to git
@@ -30,9 +30,9 @@ Unfortunately, designing your system for upgrades requires more care than just i
 - Define some process for keeping secrets in-sync with the deployed packages
 - If you have multiple environments, define a process for rolling out updates sequentially to those environments, and for giving the appropriate environment-specific parameters
 
-None of this comes for free - each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices, and to know our efforts are achieving what we want. Namely, that upgrades are applied more quickly when they are available. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
+None of this comes for free - each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices. We don't want automation for the sake of automation - we want to achieve something with them. In this case, that upgrades are applied more quickly when they are available. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
 
-# Measurement
+# Measuring Progress
 
 To choose appropriate metrics, we can look to the ideas in the world of Continuous Delivery. A lot of studies have been done in this area about good practices for teams developing and deploying software. Even though we aren't *developing* this software ourselves, we can draw on the same ideas.
 
@@ -54,7 +54,7 @@ Using a GitOps repo, you can measure *Deployment Frequency* and *Lead Time* base
 
 Before that, a word of warning. In the Continuous Delivery model, we want to automate delivery to go fast, but also to eliminate errors. Using these metrics to go faster without a focus on also releasing more safely could lead to *worse* reliability. So, for a *complete* picture of your delivery performance, it is always recommended to also track measurements of deployment risk via the MTTR and Change Failure Rate metrics. These would be measured using data from your Incident Management system. 
 
-With that said, lets dig into what git can tell us about our deployment performance. To help us with this, we'll use `askgit`. It's a CLI tool to query git repo history via SQL. 
+With that said, lets dig into what git can tell us about our deployment performance. To help us with this, we'll use `askgit` with a Postgres database. `askgit` is a CLI tool to query git repo history via SQL. 
 
 # Introducing [`askgit`](https://github.com/askgitdev/askgit)
 
@@ -83,7 +83,7 @@ The other handy feature of `askgit` is the ability to export data to an SQLite d
 ```
 askgit export monitoring/askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)" 
 ```
-SQLite is well supported by many tools, so once you have an SQLite database, there are lots of tools that can further process the data. I used `pgloader` (with the [appropriate config](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt)) to load the data into Postgres so that we will be able to query it from Grafana. This config will need to be customized with the details of your postgres server. Then, to load the data based on that config you need to run:
+SQLite is well supported by many tools, so once you have an SQLite database, there are lots of tools that can further process the data. I used `pgloader` (with the [appropriate config](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt)) to load the data into Postgres so that we will be able to query it from Grafana. You will need a Postgres server set up, then this config will need to be customized with its connection details. Then, to load the data based on that config you need to run:
 
 ```
 pgloader askgit-sqlite-to-postgres.txt
@@ -113,8 +113,14 @@ For the workflow here, we will assume ArgoCD works fairly quickly, so its lag in
 ![package update events]({{site.url}}/img/package-update-events.png)
 
 In practice, this becomes two Materialized Views in Postgres:
-- `package_folder_commits`(TODO: link) classifies file changes in commits per-package and per-purpose (vendoring, deploying,etc)
-- `package_commit_pair_cause_to_deploy`(TODO: link) pairs up vendoring package changes with the subsequent package deploy, and calculates the time difference between the two commits as the `days_between_vendor_and_deploy` column
+- [`package_folder_commits`](https://github.com/benjvi/measuring-patching-cadence/blob/d569177967bf4f583a44e9f66eee709f4c603981/create-package-deploy-view.sql#L4) classifies file changes in commits per-package and per-purpose (vendoring, deploying,etc)
+- [`package_commit_pair_cause_to_deploy`](https://github.com/benjvi/measuring-patching-cadence/blob/d569177967bf4f583a44e9f66eee709f4c603981/create-package-deploy-view.sql#L46) pairs up vendoring package changes with the subsequent package deploy, and calculates the time difference between the two commits as the `days_between_vendor_and_deploy` column
+
+Create the views by downloading [this SQL file](https://github.com/benjvi/measuring-patching-cadence/blob/main/create-package-deploy-view.sql), setting environment variables for your Postgres, and running:
+
+```
+psql -f "create-package-deploy-view.sql"
+```
 
 Based on this, we can get the deployment lag for each package update by just querying the view:
 
@@ -203,11 +209,24 @@ It includes a count of all package updates, broken out by package:
 
 Now we have a good set of dashboards to analyse deployment frequency. These figures show patching being consistently done each month, with a few more patches deployed in June due to a need to "catch-up" on some patches not applied in previous months.
 
+# Setup Recap
+
+To get the dashboard up and running, we have now:
+
+- Modified the files [`askgit-sqlite-to-postgres.txt`](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt) and/or [`cronjob.yml`](https://github.com/benjvi/measuring-patching-cadence/blob/main/cronjob.yml) with the details of your Postgres and your git repo to be analysed
+- Then loaded data into postgres:
+ - EITHER by manually extracted and loading data by running:
+   - `askgit export monitoring/askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)"` 
+   - `pgloader askgit-sqlite-to-postgres.txt` and then `psql -f "create-package-deploy-view.sql"`
+ - OR by Exacting and loading data periodically by applying the Kubernetes CronJob: `kubectl apply -f cronjob.yml` and waiting for it to run at least once
+ 
+We may now setup an `askgit` postgres datasource in Grafana and import the [dashboard](https://grafana.com/grafana/dashboards/14970)
+
 # Process Bypass
 
-The dashboard now contains the main metrics we wanted to measure, so now we can put our minds to the limitations of our measurements, and how they fit into a broader monitoring strategy.
+This dashboard contains the main metrics we wanted to measure, so now we can put our minds to the limitations of our measurements, and how they fit into a broader monitoring strategy.
 
-Here we are only measuring packages that are deployed or patched through a defined, automated, process. Any packages deployed outside of this process will not be considered. Therefore, tools that monitor specific properties for all items on the runtime system can be a useful complement to these measurements, providing assurances for properties like version freshness, number of CVEs and allowing to make some judgements on overall vulnerability. To highlight this, the dashboard includes a panel using the [kube-trivy-exporter](https://github.com/kaidotdev/kube-trivy-exporter) to display the number of images with critical CVEs.
+Here we are only measuring packages that are deployed or patched through a defined, automated, process. Any packages deployed outside of this process will not be considered. Therefore, tools that monitor specific properties for all items on the runtime system can be a useful complement to these measurements, providing assurances for properties like version freshness, number of CVEs and allowing to make some judgements on overall vulnerability. To highlight this, the dashboard includes a panel using Prometheus with the [kube-trivy-exporter](https://github.com/kaidotdev/kube-trivy-exporter) to display the number of images with critical CVEs.
 
 As mentioned earlier, it may also be advisable to track and think about metrics relating to deployment risk as another complement to these velocity-related metrics.
 
@@ -216,7 +235,5 @@ As mentioned earlier, it may also be advisable to track and think about metrics 
 We now have a dashboard that shows how well our process of automated patching is working! At least, how well it's working *in terms of its cadence*.
 
 This dashboard covers both Deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments. We are able to track improvements or deterioration over time. Over the months I've been using the dashboard it has given me a nudge to be more attentive to new patch deployments whenever I have been neglecting them.
-
-The Grafana dashboard built in this post can be imported from [here](https://grafana.com/grafana/dashboards/14970), using a Postgres datasource called `askgit`.
 
 
