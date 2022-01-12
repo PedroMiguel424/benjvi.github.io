@@ -234,6 +234,6 @@ As mentioned earlier, it may also be advisable to track and think about metrics 
 
 We now have a dashboard that shows how well our process of automated patching is working! At least, how well it's working *in terms of its cadence*.
 
-This dashboard covers both deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments, and are able to track improvements or deterioration over time. Over the months I've been using the dashboard, it has given me a nudge to be more attentive to new patch deployments whenever I have been neglecting them.
+This dashboard covers both deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments, and are able to track improvements or deterioration over time. Over the months I've been using the dashboard, it has indeed given me a nudge to be more attentive to patch deployments whenever I have been neglecting them.
 
 
