@@ -7,16 +7,17 @@ categories: [technology]
 ![patching dashboard]({{site.url}}/img/full-patching-dashboard.png)
 
 I operate a Kubernetes cluster at home, running on Raspberry Pi's, which hosts various applications. To augment the platform's capabilities, a bunch of supporting third party platform extension services also run on it, things such as:
+- Weave Network Plugin
+- MetalLB
+- cert-manager
 - Prometheus & Grafana
 - Gatekeeper
-- MetalLB
-- Weave Network Plugin
 
 When you run services you also have to worry about keeping them up-to-date, for a few reasons:
 
 - As time passes, more and more CVEs are discovered for old software, multiplying the risk of being hacked. This is particularly risky for systems accessible from the public internet, as is the case for some services that I run.
 - Even software that is not vulnerable may also become problematic. If other (vulnerable) components are upgraded around an unchanged piece of software, newer versions may choose to drop compatibility with older APIs, and integrations may break.
-- Finally, most software is broken on some level. You often run into bugs and feature gaps, where your use case is different from what the authors expected. Many (or at least some) of these issues are fixed in software updates.
+- Most software is broken on some level. You often run into bugs and feature gaps, where your use case is different from what the authors expected. Many of these issues are fixed in software updates.
 
 For these reasons, it's important not just to install the software, but also to keep it updated.
 
@@ -24,18 +25,18 @@ For these reasons, it's important not just to install the software, but also to 
 
 Unfortunately, designing your system for upgrades requires more care than just installing a package. You should:
 - Keep track of the current state of your infrastructure using Infrastructure as Code, aka package manifest YAML files checked-in to git
-- Keep track of where to pull the package from, and possibly an upgrade process too, using something like [Vendir](https://carvel.dev/vendir/docs/latest/).
+- Keep track of where to pull the package from, and possibly define an upgrade process too. A tool like [Vendir](https://carvel.dev/vendir/docs/latest/) can be used for this.
 - Keep track of any customizations you made to a package, and define a repeatable process for applying them
 - Define some process for keeping secrets in-sync with the deployed packages
 - If you have multiple environments, define a process for rolling out updates sequentially to those environments, and for giving the appropriate environment-specific parameters
 
-None of this is easy, and each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices, and to know our efforts are achieving good outcomes. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
+None of this is easy, and each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices, and to know our efforts are achieving what we want. Namely, that upgrades are applied more quickly when they are available. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
 
 # Measurement
 
-To choose appropriate metrics, we can look to the ideas in the world of Continuous Delivery. A lot of studies have been done in this area about good practices for teams developing and deploying software. Even though we aren't developing *this* software ourselves, we can draw on the same ideas.
+To choose appropriate metrics, we can look to the ideas in the world of Continuous Delivery. A lot of studies have been done in this area about good practices for teams developing and deploying software. Even though we aren't *developing* this software ourselves, we can draw on the same ideas.
 
-In particular, the top-level metrics for teams looking to improve performance (the (TODO link)DORA metrics) are relevant as goals to work towards:
+In particular, the so-called [DORA (DevOps Research and Asseessment) metrics](https://www.blueoptima.com/blog/how-to-measure-devops-success-why-dora-metrics-are-important) are top-level metrics for teams looking to improve software development performance. In our quest to improve patching, it will also be important to track these metrics:
 - (Increasing) Deployment Frequency
 - (Decreasing) Lead Time for Delivery
 - (Decreasing) Mean Time To Recovery (MTTR) 
@@ -47,7 +48,7 @@ Importantly, these are very precise things that we can (in principle) quantitati
 - *MTTR* = `(time an incident began) - (time an incident ended)`
 - *Change Failure Rate* = `(number of releases triggering incidents) / (number of releases) = 1 - proportion of successful releases `
 
-In broad terms, these four metrics relate to counting and gathering timings over deployment events (Deployment Frequency & Lead Time) and relating those deployment events to counts and timings of service incidents (giving MTTR and Change Failure Rate).
+In broad terms, these four metrics relate to (1) counting and gathering timings over deployment events (Deployment Frequency & Lead Time) and (2) relating those deployment events to counts and timings of service incidents (MTTR & Change Failure Rate).
 
 Using a GitOps repo, you can measure *Deployment Frequency* and *Lead Time* based entirely on the Git history. This is what we're going to dig into in subsequent sections of this post. To help with that, we'll use `askgit`. It's a CLI tool to query git repo history via SQL. 
 
