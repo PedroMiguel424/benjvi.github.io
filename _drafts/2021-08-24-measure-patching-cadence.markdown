@@ -209,6 +209,8 @@ The dashboard now contains the main metrics we wanted to measure, so now we can 
 
 Here we are only measuring packages that are deployed or patched through a defined, automated, process. Any packages deployed outside of this process will not be considered. Therefore, tools that monitor specific properties for all items on the runtime system can be a useful complement to these measurements, providing assurances for properties like version freshness, number of CVEs and allowing to make some judgements on overall vulnerability. To highlight this, the dashboard includes a panel using the [kube-trivy-exporter](https://github.com/kaidotdev/kube-trivy-exporter) to display the number of images with critical CVEs.
 
+As mentioned earlier, it may also be advisable to track and think about metrics relating to deployment risk as another complement to these velocity-related metrics.
+
 # Conclusion
 
 We now have a dashboard that shows how well our process of automated patching is working! At least, how well it's working *in terms of its cadence*.
