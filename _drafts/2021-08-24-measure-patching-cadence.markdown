@@ -13,11 +13,11 @@ I operate a Kubernetes cluster at home, running on Raspberry Pi's, which hosts v
 - Prometheus & Grafana
 - Gatekeeper
 
-When you run services you also have to worry about keeping them up-to-date, for a few reasons:
+When you run services, you also have to worry about keeping them up-to-date, for a few reasons:
 
-- As time passes, more and more CVEs are discovered for old software, multiplying the risk of being hacked. This is particularly risky for systems accessible from the public internet, as is the case for some services that I run.
-- Even software that is not vulnerable may also become problematic. If other (vulnerable) components are upgraded around an unchanged piece of software, newer versions may choose to drop compatibility with older APIs, and integrations may break.
-- Most software is broken on some level. You often run into bugs and feature gaps, where your use case is different from what the authors expected. Many of these issues are fixed in software updates.
+- As time passes, more and more CVEs are discovered for old software, multiplying the risk of being hacked. It's particularly risky for systems accessible from the public internet, as is the case for some services I run.
+- Even software that is not vulnerable may also become problematic. If other (vulnerable) components are upgraded around an unchanged piece of software, newer versions may be incompatible with older APIs, and integrations may break.
+- Most software is broken on some level. You often run into bugs and feature gaps - where your use case is different from what the authors expected. Many of these issues are fixed in software updates.
 
 For these reasons, it's important not just to install the software, but also to keep it updated.
 
@@ -30,13 +30,13 @@ Unfortunately, designing your system for upgrades requires more care than just i
 - Define some process for keeping secrets in-sync with the deployed packages
 - If you have multiple environments, define a process for rolling out updates sequentially to those environments, and for giving the appropriate environment-specific parameters
 
-None of this comes for free - each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices. We don't want automation for the sake of automation - we want to achieve something with them. In this case, that upgrades are applied more quickly when they are available. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
+None of this comes for free - each aspect requires some engineering effort. And when things get more complex, it's easy to lose sight of the big picture. It's important to make sure we aren't just cargo-culting practices. We don't want automation for the sake of automation - we want to achieve something with them. Namely, that upgrades are applied more quickly when they are available. Therefore, we should *identify the metrics we want to improve*, and *measure their trends*.
 
 # Measuring Progress
 
 To choose appropriate metrics, we can look to the ideas in the world of Continuous Delivery. A lot of studies have been done in this area about good practices for teams developing and deploying software. Even though we aren't *developing* this software ourselves, we can draw on the same ideas.
 
-In particular, the so-called [DORA (DevOps Research and Asseessment) metrics](https://www.blueoptima.com/blog/how-to-measure-devops-success-why-dora-metrics-are-important) are top-level metrics for teams looking to improve software development performance. In our quest to improve patching, it will also be important to track these metrics:
+In particular, the so-called [DORA (DevOps Research and Assessment) metrics](https://www.blueoptima.com/blog/how-to-measure-devops-success-why-dora-metrics-are-important) are top-level metrics for teams looking to improve software development performance. In our quest to improve patching, it will also be important to track these metrics:
 - (Increasing) Deployment Frequency
 - (Decreasing) Lead Time for Delivery
 - (Decreasing) Mean Time To Recovery (MTTR) 
@@ -52,13 +52,13 @@ In broad terms, these four metrics relate to (1) counting and gathering timings 
 
 Using a GitOps repo, you can measure *Deployment Frequency* and *Lead Time* based entirely on the Git history. This is what we're going to dig into in subsequent sections of this post. 
 
-Before that, a word of warning. In the Continuous Delivery model, we want to automate delivery to go fast, but also to eliminate errors. Using these metrics to go faster without a focus on also releasing more safely could lead to *worse* reliability. So, for a *complete* picture of your delivery performance, it is always recommended to also track measurements of deployment risk via the MTTR and Change Failure Rate metrics. These would be measured using data from your Incident Management system. 
+Before that, a word of warning. In the Continuous Delivery model, we want to automate delivery not only to go fast, but also to eliminate errors. Trying to optimise these metrics to go faster without also focusing on releasing more safely could lead to *worse* reliability. So, for a *complete* picture of your delivery performance, it is always recommended to *also* track measurements of deployment risk via the MTTR and Change Failure Rate metrics. These would be measured using data from your Incident Management system. 
 
-With that said, lets dig into what git can tell us about our deployment performance. To help us with this, we'll use `askgit` with a Postgres database. `askgit` is a CLI tool to query git repo history via SQL. 
+With that said, let's dig into what git can tell us about our deployment performance. To help us with this, we'll use `askgit` with a Postgres database. `askgit` is a CLI tool to query git repo history via SQL. 
 
 # Introducing [`askgit`](https://github.com/askgitdev/askgit)
 
-Exposing the data in your git history means you can ask all different sorts of questions. There is a `commits` table so we can just ask for a list of all the commits, similar to what you would get with `git log`:
+Exposing the data in your git history means you can ask all different sorts of questions. There is a `commits` table so we can ask for a list of all the commits, similar to what you would get with `git log`:
 
 ```
 askgit 'select * from commits'
@@ -83,7 +83,7 @@ The other handy feature of `askgit` is the ability to export data to an SQLite d
 ```
 askgit export monitoring/askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)" 
 ```
-SQLite is well supported by many tools, so once you have an SQLite database, there are lots of tools that can further process the data. I used `pgloader` (with the [appropriate config](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt)) to load the data into Postgres so that we will be able to query it from Grafana. You will need a Postgres server set up, then this config will need to be customized with its connection details. Then, to load the data based on that config you need to run:
+SQLite is well supported by many tools, so once you have an SQLite database, there are lots of tools that can further process the data. I used `pgloader` (with the [appropriate config](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt)) to load the data into Postgres so that we will be able to query it from Grafana. You will need a Postgres server set up, then this config will need to be customized with its connection details. Then, to load the data based on that config you will run:
 
 ```
 pgloader askgit-sqlite-to-postgres.txt
@@ -108,7 +108,7 @@ With that in mind, we can go on to measure the cadence of this process, in terms
 
 Lead time is the measure of how long this update process takes. This is the most important metric to optimize in patching, as it will tell us how long our deployed version lags behind where we want it to be. If our lead time is more than a few days we may start to incur some of the risks of running outdated software. The total lead time is the time interval between when an updated package was first discovered, to when it was deployed in prod. 
 
-For the workflow here, we will assume ArgoCD works fairly quickly, so its lag in deploying can be ignored. So the query becomes: "How long does it take for changes to progress from `packages/vendored` to `sync/prod`? To find this out we should look at each package vendoring event, then for each event find the next time the same package was deployed. 
+Let's apply this to the actual deployment workflow described in the previous section. We will assume ArgoCD works fairly quickly, so its lag in deploying can be ignored. So the query becomes: "How long does it take for changes to progress from `packages/vendored` to `sync/prod`? To find this out, we should look at each individual pair of commits. We start by considering each package vendoring commit. For each commit, we can then search for the next related deployment commit. 
 
 ![package update events]({{site.url}}/img/package-update-events.png)
 
@@ -137,9 +137,9 @@ The last thing we need to do is to create an aggregation of this data so we can 
 
 # Measuring Deployment Frequency
 
-Deployment frequency is useful to give us some idea of how much deployment work is being done, that is to say, how many times updated packages are being deployed. In the context of patching more deploys is not necessarily better, as its not a bad thing if software doesn't *need* patching. Saying that, most teams I've worked with are always behind on patching, and at a minimum this metric should show that at least *some* patching is going on.
+Deployment frequency is useful to give us some idea of how much deployment work is being done, that is to say, how many times updated packages are being deployed. In the context of patching, more deploys is not necessarily better, as it's not a bad thing if software doesn't *need* patching. Saying that, most teams I've worked with are always behind on patching, and at a minimum, this metric should show that at least *some* patching is going on.
 
-Specifically, here we want to measure just those deployments that are associated with package updates. There may be deployments that are associated with other events such as configuration changes. Since we already had to match up deploy commits with vendor commits to find lead time, we will only consider deploy commits that were matched up with vendor events. This ensures only deployments associated with package updates are counted.
+Specifically, here we want to measure just those deployments associated with package updates. There may be deployments associated with other events such as configuration changes. Since we already had to match up deploy commits with vendor commits to find the lead time, we will only consider deploy commits that were matched up with vendoring commits. This ensures only deployments associated with package updates are counted.
 
 Once the data has been filtered, count the number of unique deploy commits. We can do this based on the views defined in the last section, with the following query:
 
@@ -170,7 +170,7 @@ WHERE
   $__timeFilter(deploy_commit_author_when)
 group by 1
 ```
-Where this gives us the maximum, minimum and median lead times for each month. Note that this calculates values per calendar month, not over windowed periods of time. It's not possible to do the latter in plain Postgres, without relying on the [timescaledb extension](https://docs.timescale.com/api/latest/hyperfunctions/time_bucket/). But this simpler way suits our needs anyway. Sometime simplicity is a virtue. Calendar months are easy to understand. So, the corresponding grafana panel will look like:
+Where this gives us the maximum, minimum and median lead times for each month. Note that this calculates values per calendar month, not over windowed periods of time. It's not possible to do the latter in plain Postgres, without relying on the [timescaledb extension](https://docs.timescale.com/api/latest/hyperfunctions/time_bucket/). But this simpler way suits our needs anyway. Sometimes simplicity is a virtue. Calendar months are easy to understand. So, the corresponding Grafana panel will look like:
 
 ![lead time trend]({{site.url}}/img/patching-lead-time-trend.png)
 
@@ -202,7 +202,7 @@ As before, there are also figures showing the deployment frequency in the curren
 ![patching frequency]({{site.url}}/img/patching-freq-panels.png)
 
 For additional context, the dashboard also includes the same frequency statistics for the vendoring process:
-![vendoring frequeny]({{site.url}}/img/vendoring-freq-panels.png)
+![vendoring frequency]({{site.url}}/img/vendoring-freq-panels.png)
 
 It includes a count of all package updates, broken out by package:
 ![patching count by package]({{site.url}}/img/patching-count-by-package.png)
@@ -214,13 +214,13 @@ Now we have a good set of dashboards to analyse deployment frequency. These figu
 To get the dashboard up and running, we have now:
 
 - Modified the files [`askgit-sqlite-to-postgres.txt`](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt) and/or [`cronjob.yml`](https://github.com/benjvi/measuring-patching-cadence/blob/main/cronjob.yml) with the details of your Postgres and your git repo to be analysed
-- Then loaded data into postgres:
+- Then loaded data into Postgres:
  - EITHER by manually extracting and loading data by running:
    - `askgit export monitoring/askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)"` 
    - `pgloader askgit-sqlite-to-postgres.txt` and then `psql -f "create-package-deploy-view.sql"`
  - OR by exracting and loading data periodically by applying the Kubernetes CronJob: `kubectl apply -f cronjob.yml` and waiting for it to run at least once
  
-We may now setup an `askgit` postgres datasource in Grafana and import the [dashboard](https://grafana.com/grafana/dashboards/14970)
+We may now setup an `askgit` Postgres datasource in Grafana and import the [dashboard](https://grafana.com/grafana/dashboards/14970)
 
 # Process Bypass
 
@@ -234,6 +234,6 @@ As mentioned earlier, it may also be advisable to track and think about metrics 
 
 We now have a dashboard that shows how well our process of automated patching is working! At least, how well it's working *in terms of its cadence*.
 
-This dashboard covers both Deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments. We are able to track improvements or deterioration over time. Over the months I've been using the dashboard it has given me a nudge to be more attentive to new patch deployments whenever I have been neglecting them.
+This dashboard covers both deployment lead time and deployment frequency, making up half of the DORA metrics. So we know now about the cadence of our deployments, and are able to track improvements or deterioration over time. Over the months I've been using the dashboard, it has given me a nudge to be more attentive to new patch deployments whenever I have been neglecting them.
 
 
