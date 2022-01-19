@@ -7,6 +7,8 @@ spec:
   startingDeadlineSeconds: 100
 #  schedule: "* * * * *"
   schedule: "03 */6 * * *"
+  # job currently broken due to pgloader version, suspend until fixed
+  suspend: true
   jobTemplate:
     spec:
       template:
