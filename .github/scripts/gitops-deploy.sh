@@ -14,6 +14,7 @@ echo "$IMG_VERSION"
 cd _deploy/k8s
 kustomize edit set image "benjvi/blog-arm=benjvi/blog-arm:${IMG_VERSION}"
 kustomize build . > /rpi-k8s/sync/prod/blog/k8s-blog/package.yml
+yshard --help
 # need some details set in env for prify to work correctly
 # not all context is kept between sh commands, so use a one liner
 cd -
