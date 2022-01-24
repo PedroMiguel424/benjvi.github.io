@@ -1,12 +1,16 @@
 ---
 layout: post
-title: "Measuring Patching Cadence on Kubernetes with `askgit` and Postgres"
+title: "Measuring Patching Cadence on Kubernetes with `mergestat` and Postgres"
 categories: [technology]
 ---
 
 ![patching dashboard]({{site.url}}/img/full-patching-dashboard.png)
 
-I operate a Kubernetes cluster at home, running on Raspberry Pi's, which hosts various applications. To augment the platform's capabilities, a bunch of supporting third party platform extension services also run on it, things such as:
+A lot has been said about GitOps and similar process can produce a more observable deployment pipeline, but less has been said about how to get insights from that. In this post, we'll look at how to mine data captured in your git history to track patching performance.
+
+# Patching Installed "Packages"
+
+Operating Kubernetes is not just about etcd, the API Server and the Kubelets. It's also about what runs on top of that. I operate a Kubernetes cluster at home, running on Raspberry Pi's, which hosts various applications. To augment the platform's capabilities, a bunch of supporting third party platform extension services also run on it, things such as:
 - Weave Network Plugin
 - MetalLB
 - cert-manager
@@ -54,43 +58,53 @@ Using a GitOps repo, you can measure *Deployment Frequency* and *Lead Time* base
 
 Before that, a word of warning. In the Continuous Delivery model, we want to automate delivery not only to go fast, but also to eliminate errors. Trying to optimise these metrics to go faster without also focusing on releasing more safely could lead to *worse* reliability. So, for a *complete* picture of your delivery performance, it is always recommended to *also* track measurements of deployment risk via the MTTR and Change Failure Rate metrics. These would be measured using data from your Incident Management system. 
 
-With that said, let's dig into what git can tell us about our deployment performance. To help us with this, we'll use `askgit` with a Postgres database. `askgit` is a CLI tool to query git repo history via SQL. 
+With that said, let's dig into what git can tell us about our deployment performance. To help us with this, we'll use `mergestat`. 
 
-# Introducing [`askgit`](https://github.com/askgitdev/askgit)
+# Introducing [`mergestat`](https://github.com/askgitdev/askgit)
+
+`mergestat` is a CLI tool to query git repo history via SQL. This will give us a way to access the information about deployment history that a GitOps repo encodes.
+
+You can install it according to the [installation documents](https://docs.mergestat.com/getting-started-cli/installation). I did encounter a few niggling issues with the package-based install - installation of pre-built binaries seems to be the easiest way.
 
 Exposing the data in your git history means you can ask all different sorts of questions. There is a `commits` table so we can ask for a list of all the commits, similar to what you would get with `git log`:
 
 ```
-askgit 'select * from commits'
+mergestat 'select * from commits'
 ```
 
 To add the details of files changed in each commit, we'll cross-reference the `stats` table. This will allow us to identify commits where a new package was discovered and fetched (i.e. "vendored"). The workflow fetching new packages will create a commit with the changes, checking in packages to the `packages/vendored` directory. This allows us to identify updates to vendored packages: 
 
 ```
-askgit "select * from commits, stats('', commits.hash) where file_path like 'packages/vendored/%'"
+mergestat "select * from commits, stats('', commits.hash) where file_path like 'packages/vendored/%'"
 ```
 
 Similarly, we will get prod deployment events when commits include changed files representing the desired state of prod - which are those under `sync/prod`:
 
 ```
-askgit "select * from commits, stats('', commits.hash) where file_path like 'sync/prod/%'"
+mergestat "select * from commits, stats('', commits.hash) where file_path like 'sync/prod/%'"
 ```
 
 The presence of a GitOps tool like ArgoCD makes sure that these updates made to a Git repo produce actual deployment events. 
 
-The other handy feature of `askgit` is the ability to export data to an SQLite database, with a command like:
+The other handy feature of `mergestat` is the ability to export data to an SQLite database, with a command like:
 
 ```
-askgit export askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from stats('', commits.hash)" 
+mergestat export askgit-commits-stats-db.sqlite3 -e commits -e "select * from commits" -e stats -e "select * from commits,stats('', commits.hash)" 
 ```
 
-Because of some schema changes that have happened in askgit over time, we need to add some column remapping so that the dashboard queries will work properly later on:
+Because of some schema changes that have happened in mergestat over time, we need to add some column remapping so that the dashboard queries will work properly later on:
 
 ```
-askgit export askgit-commits-stats-db.sqlite3 -e commits -e "select hash as id,* from commits;" -e stats -e "SELECT commits.hash as "commit_id", stats.file_path as "file", stats.additions, stats.deletions FROM commits, stats('', commits.hash)"
+mergestat export askgit-commits-stats-db.sqlite3 -e commits -e "select hash as id,* from commits;" -e stats -e "SELECT commits.hash as "commit_id", stats.file_path as "file", stats.additions, stats.deletions FROM commits, stats('', commits.hash)"
 ```
 
-SQLite is well supported by many tools, so once you have an SQLite database, there are lots of tools that can further process the data. I used `pgloader` (with the [appropriate config](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt)) to load the data into Postgres so that we will be able to query it from Grafana. You will need a Postgres server set up, then this config will need to be customized with its connection details. Then, to load the data based on that config you will run:
+SQLite is well supported by many tools, so once you have an SQLite database, there are lots of tools that can further process the data. I used `pgloader` to load the data into Postgres so that we will be able to query it from Grafana. You can install it following [these instructions](https://github.com/dimitri/pgloader#install).
+
+Download the [data loading configuration](https://github.com/benjvi/measuring-patching-cadence/blob/main/askgit-sqlite-to-postgres.txt) to the file `askgit-sqlite-to-postgres.txt`. This specifies how to load the data into Postgres so that we will be able to query it from Grafana. 
+
+You will need a Postgres server already set up to connect to. Customize this config file with the connection details for your server. This does not contain the credentials. Instead, export the `PGUSER` and `PGPASSWORD` environment variables to be read by `pgloader`.
+
+With the set up done, to load the data you will run:
 
 ```
 pgloader askgit-sqlite-to-postgres.txt
@@ -102,7 +116,7 @@ I also created [a Kubernetes `CronJob`](https://github.com/benjvi/measuring-patc
 
 My end-to-end update process for packages looks like the following:
 
-![package update flow]({{site.ur}}/img/package-update-flow.png)
+![package update flow]({{site.url}}/img/package-update-flow.png)
 
 1. There's a vendoring workflow that is scheduled daily, which runs `vendir sync` and checks-in the result. This adds any new package versions to the `packages/vendored/` folder according to the package specification in `vendir.yml`
 2. Off the back of this, additional workflows are triggered to check-in the manifests to the `sync/prod` folder, then push the changes to a branch and finally raise a PR
