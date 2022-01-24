@@ -6,9 +6,9 @@ categories: [technology]
 
 ![patching dashboard]({{site.url}}/img/full-patching-dashboard.png)
 
-A lot has been said about GitOps and similar process can produce a more observable deployment pipeline, but less has been said about how to get insights from that. In this post, we'll look at how to mine data captured in your git history to track patching performance.
+A lot has been said about GitOps and similar process can produce a more observable deployment pipeline, but less has been said about how to get insights from that. In this post, I'll share my approach to mine data captured in git history, based on my eexperience managing third-party software installed in Kubernetes. 
 
-# Patching Installed "Packages"
+# Platform "Packages"
 
 Operating Kubernetes is not just about etcd, the API Server and the Kubelets. It's also about what runs on top of that. I operate a Kubernetes cluster at home, running on Raspberry Pi's, which hosts various applications. To augment the platform's capabilities, a bunch of supporting third party platform extension services also run on it, things such as:
 - Weave Network Plugin
@@ -17,7 +17,7 @@ Operating Kubernetes is not just about etcd, the API Server and the Kubelets. It
 - Prometheus & Grafana
 - Gatekeeper
 
-When you run services, you also have to worry about keeping them up-to-date, for a few reasons:
+Although these are part of platform, they're also packages that you install on top of the base platform. When you run packages, as with all packages, you also have to worry about keeping them up-to-date, for a few reasons:
 
 - As time passes, more and more CVEs are discovered for old software, multiplying the risk of being hacked. It's particularly risky for systems accessible from the public internet, as is the case for some services I run.
 - Even software that is not vulnerable may also become problematic. If other (vulnerable) components are upgraded around an unchanged piece of software, newer versions may be incompatible with older APIs, and integrations may break.
