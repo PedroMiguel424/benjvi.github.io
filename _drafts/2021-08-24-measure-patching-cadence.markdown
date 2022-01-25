@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "Measuring Patching Cadence on Kubernetes with `mergestat` and Postgres"
+title: "Measuring Patching Cadence on Kubernetes"
 categories: [technology]
 ---
 
 ![patching dashboard]({{site.url}}/img/full-patching-dashboard.png)
 
-A lot has been said about GitOps and similar process can produce a more observable deployment pipeline, but less has been said about how to get insights from that. In this post, I'll share my approach to mine data captured in git history, based on my eexperience managing third-party software installed in Kubernetes. 
+A lot has been said about GitOps and similar process can produce a more observable deployment pipeline, but less has been said about how to get insights from that. In this post, I'll share my approach to mine data captured in git history, based on my experience managing third-party software installed on Kubernetes. 
 
 # Platform "Packages"
 
