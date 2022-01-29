@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Putting the Meaning in Platform Engineering"
-categories: [thoughts]
+categories: [thoughts, technology]
 image: ibelonghere.webp
 ---
 
