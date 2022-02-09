@@ -1,8 +1,7 @@
 ---
 layout: post
-title: "Memorable Trips: Visiting Honduras (Pt. 2 - Copan)"
-categories: []
-hidden: true
+title: "Visiting Honduras II - Copan"
+categories: ["memorable-journeys"]
 ---
 
 Having exhausted our [time in Roatan]({{site.url}}/2021/09/11/honduras-trip-1), we set off in the morning on the ferry back to the mainland. On arrival back in La Ceiba, and being reunited with our trusty Toyota Camry, we stop off on the road out of the city at a Dunkin Donuts for breakfast. Ordinarily, I would not consider this to be noteworthy, but the Dunkin Donuts in Honduras uses 100% locally produced coffee. And its really the good stuff, nothing like the mediocrity I've drunk in other Dunkin Donuts. A perk of being in a coffee producing country.
