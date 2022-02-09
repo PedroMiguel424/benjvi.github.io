@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: blog
+    run: blog
+  name: blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: blog
+        run: blog
+        version: "2"
+    spec:
+      containers:
+      - image: benjvi/blog-arm-dev
+        name: blog
+        resources: {}
+        ports:
+        - containerPort: 80
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: blog
+    run: blog
+  name: blog
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: blog
+status:
+  loadBalancer: {}

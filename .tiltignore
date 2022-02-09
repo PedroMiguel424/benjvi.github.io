@@ -1,0 +1,6 @@
+**/.*.swp
+**/.*.swpx
+**/.*.swx
+.dockerignore
+.jekyll-cache/
+.jekyll-metadata
