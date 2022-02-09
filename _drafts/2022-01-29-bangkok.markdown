@@ -1,21 +1,26 @@
 ---
 layout: post
-title: "Memorable Journeys: Backpacking Asia Pt1 - Bangkok"
-categories: [technology]
+title: "Backpacking Asia I - Bangkok"
+categories: ["memorable-journeys"]
 image: ibelonghere.png
 ---
 Like many young Brits, around my university years I started to get a taste for travel. I didn't take exactly the full traditional gap year, but I did take three months to travel after I left Uni and before starting my graduate job. For me, this was an important rite of passage, to go out there and to see a little of the strange and wonderful things you can find out there in the world, far from home.
 
-![](/img/asia/bkk/abu-dhabi-sun.jpg)
-![](/img/asia/bkk/plane-view.jpg)
+<div style="display: flex; justify-content: center; width: 96%; margin-left: auto; margin-right: auto">
+<img class="inlineimg" src="/img/asia/bkk/abu-dhabi-sun.jpg" style="max-width: 49%"/>
+<img class="inlineimg" src="/img/asia/bkk/plane-view.jpg" style="max-width: 49%"/>
+</div>
+
 The long-haul flight and arrival at Bangkok airport, while novel, is only a blur in my memories. I do however have distinct memories of the sights and sounds of Bangkok on those first couple of days. A mass of people everywhere. Cars, bikes and people on the streets going every which way. The strange mix of rustic stalls with unfamiliar offerings contrasting with the metro and modern skyscrapers. A heavy humid heat enveloping everything. 
 
 ![](/img/asia/bkk/market.jpg)
 ![](/img/asia/bkk/city-view-2.jpg)
+![](/img/asia/bkk/boat-monk.jpg)
+![](/img/asia/bkk/paragon-mall.jpg)
 
-Most of all I remember the smell,  Bangkok has many strong smells - whether it be from the markets, the tuktuks everywhere or the canals. Beyond that, on those first couple of days, it seemed everything was infused with a strange unfamiliar aroma. I tend to think this was a very visceral form of culture shock. Not yet accustomed to the surroundings, I tried to escape this aroma by visiting a MacDonalds on Khao San Road, only to find it even infused into the oil of my fries.  
+Most of all I remember the smell,  Bangkok has many strong smells - whether it be from the markets, the tuktuks everywhere or the canals. Beyond that, on those first couple of days, it seemed everything was infused with a strange unfamiliar aroma. I tend to think this was a very visceral form of culture shock. Not yet accustomed to the surroundings, I tried to escape this aroma by visiting a McDonalds on the infamous *Khao San Road*, only to find it even infused into the oil of my fries.  
 
-Fortunately, my trepidation faded after the first day or two and I was able to enjoy everything that Bangkok has to offer. There is a reason Thailand is so popular for tourists. It's is a kingdom with a long and illustrious history, and has a lot of impressive cultural sites to prove it. It has a strong cuisine, and an enchanting street food culture. The street of Bangkok are bursting with different exciting foods to try. Perhaps most importantly for backpackers, its also cheap!
+Fortunately, my trepidation faded after the first day or two and I was able to enjoy everything that Bangkok has to offer. There is a reason Thailand is so popular for tourists. It's is a kingdom with a long and illustrious history, and has a lot of impressive cultural sites to prove it. It has a strong cuisine, and an enchanting street food culture. The streets of Bangkok are bursting with different exciting foods to try. Perhaps most importantly for backpackers, its also cheap!
 
 ![](/img/asia/bkk/on-river-boat-2.jpg)
 
@@ -32,23 +37,27 @@ The Grand Palace and the Temple of the Emerald Buddha, while more of a tradition
 
 Despite being interested in Buddhism, the style and symbolism of the Buddhist temples in Thailand was completely unfamiliar to me. Their ornateness seems appropriate for the rich history and deep roots in society that the Theravada school of Buddhism has in Thailand.
 
-![](/img/asia/bkk/buddhas.jpg)
-![](/img/asia/bkk/big-buddha.jpg)
+<div style="display: flex; justify-content: center; width: 96%; margin-left: auto; margin-right: auto">
+<img class="inlineimg" src="/img/asia/bkk/buddhas.jpg" style="max-width: 49%"/>
+<img class="inlineimg" src="/img/asia/bkk/big-buddha.jpg" style="max-width: 49%"/>
+</div>
 
-Aside from the aforementioned street food, I also found the range of exotic snacks you could find even in Seven Elevens very exciting. Likewise, the malls in Bangkok held some appeal for me, in particular I found the food courts to be an excellent option when wanting to escape from the heat.
+Aside from the aforementioned street food, I also found the range of exotic snacks you could find even in Seven Elevens very exciting. Likewise, the malls in Bangkok held quite some appeal for me, in particular I found the food courts to be an excellent option when wanting to escape from the heat.
 
 ![](/img/asia/bkk/mbk-mall.jpg)
-![](/img/asia/bkk/paragon-mall.jpg)
 ![](/img/asia/bkk/mall-food-court.jpg)
 ![](/img/asia/bkk/thai-soup.jpg)
+![](/img/asia/bkk/thai-mall-food.jpg)
+![](/img/asia/bkk/mango-sticky-rice.jpg)
 
-After experiencing the chaos of Bangkok, my plan was to travel down to the relative peace of the island of Koh Tao. I had prebooked a ticket on the night train from Bangkok to Chumphon. The train line seemed incongruous so close and unfenced off from the densely developed city around it. Since it was night I didn't see much, but I imagine it like this: (youtube video)
+After experiencing the chaos of Bangkok, my plan was to travel down to the relative peace of the island of Koh Tao. I had prebooked a ticket on the night train from Bangkok to Chumphon. The train line seemed incongruous so close and unfenced off from the densely developed city around it. Since it was night I didn't see much, but I like to imagine it passing through the midst of everything, like the famous Maeklong Railway Market.
 
-The most of what I was able to actually see was this:
+The most of what I was able to *actually* see from the window of the sleeper car was this:
 
 ![](/img/asia/bkk/train-night.jpg)
 
-In the (very) morning, the train arrived in Chumphon. It was not the most smooth transfer, taking a bus to the ferry port and having to wait a few hours for the ferry to depart for Koh Tao. The sunrise was some consolation.
+In the (very) early morning, the train arrived in Chumphon. It was not the most smooth transfer, taking a bus to the ferry port and having to wait a few hours for the ferry to depart for Koh Tao. Not ideal, being already sleep deprived after sleeping poorly and waking up very early. However, the sunrise was some consolation.
 
 ![](/img/asia/bkk/chumphon.jpg)
-But eventually the ferry arrived, and I was on the way to the main event of the trip (see pt 2).
+
+But eventually the ferry arrived, and I was on the way to the main event of the trip ... which we will get into in the next post in this series.
