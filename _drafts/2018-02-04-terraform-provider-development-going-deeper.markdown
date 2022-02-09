@@ -5,20 +5,22 @@ categories: [technology]
 image: ibelonghere.png
 ---
 
-One of the nice things about Terraform, and one of the reasons that it has been so successful is that it is very easy to extend with new (cloud) APIs. Terraform offers scaffolding you can easily build upon to create new providers and new resources. For a new resource, you just need to create:
+One of the nice things about Terraform, and one of the reasons it has been so successful, is that it is very easy to extend with new (cloud) APIs. Terraform offers scaffolding you can build upon to create new providers and new resources. For a new resource, you only need to create:
  - a resource schema definition
  - a set of CRUD methods that wrap API methods for the relevant resources 
  - translations of the API resource representations into the defined schema
  
- On the provider level, you need to define little more than the set of resources that the provider can manage, and how to construct the API client that will be used to interact with the backend. 
+ On the provider level, you need to define little more than:
+ - the set of resources that the provider can manage
+ - how to construct the API client used to interact with the backend 
 
-There are a bunch of useful resources on how to get started with provider development, foremost upon them the [HashiCorp Guide](https://www.Terraform.io/guides/writing-custom-terraform-providers.html) and [Terraform Contributing Guide](https://github.com/hashicorp/Terraform/blob/master/.github/CONTRIBUTING.md). [This article](http://container-solutions.com/write-Terraform-provider-part-1/) is also nice, covering some of the same material just in a different way. With the mechanics already covered, here we will illustrate some of the choices you will need to make in translating your API definitions into Terraform resources, and give some guidance for how to make these decisions. This is where the real meat of provider development is. Hopefully this article will also leave you with a deeper understanding of what a resource is supposed to look like, and leave you well prepared for the kind of discussions around style and design that take place in Terraform issues and PRs.
+There are a bunch of useful resources on how to get started with provider development, foremost upon them the [HashiCorp Guide](https://www.Terraform.io/guides/writing-custom-terraform-providers.html) and [Terraform Contributing Guide](https://github.com/hashicorp/Terraform/blob/master/.github/CONTRIBUTING.md). [This article](http://container-solutions.com/write-Terraform-provider-part-1/) is also nice, covering some of the same material just in a different way. With the mechanics already covered, here we will illustrate some of the choices you will need to make in translating your API definitions into Terraform resources, and give some guidance for how to make these decisions. This is where the real meat of provider development is. Hopefully, this article will also leave you with a deeper understanding of what a resource is supposed to look like, and leave you well prepared for the kind of discussions around style and design that take place in Terraform issues and PRs.
 
 ## Writing The Schema
 
-### Deciding Types
+### Types
 
-The first step I usually take when defining a new resource is to transcribe the fields from the API docs into a  Terraform resource. The name of each Terraform attribute should generally be the same as the name of the object in the API (the convention in Terraform is to use camel-casing, which also typical in JSON). Since the types that the Terraform schema supports is more constrained than general datatypes in Go, we need to do some simple mapping:
+When defining a new resource, the first step I take is to transcribe the fields from the API docs into a Terraform resource. The name of each Terraform attribute should generally be the same as the name of the object in the API (the convention in Terraform is to use camel-casing, which also typical in JSON). Since the types that the Terraform schema supports is more constrained than general datatypes in Go, we need to do some simple mapping:
   - Ints, Strings and Booleans map directly to the Terraform types `TypeInt`, `TypeString`, `TypeBool`
   - For some simple types like `Float`'s and `Time`'s it makes sense to serialise them as `TypeString`. However for most simple structs (objects), you should use Terraform's way of defining nested objects (see below)
   - Go itself doesn't have much support for enums, however, if the data is of this nature this would be handled by using the `validation.StringInSlice` function from the *terraform/helper/validation* package as the `ValidateFunc` of the attribute
@@ -37,9 +39,9 @@ In the Terraform schema, we don't just specify types, but also who should specif
  
 ### Choosing Data Structures
 
-Terraform has List, Set and Map data structures available for attributes, and in general you should expect to use them as you would learn in CompSci 101. In other words, use lists when ordering is important, use maps when your data is made of key-values and use sets to guarantee objects in your list are unique. However, data structures in Terraform do have their limitations.
+Terraform has List, Set and Map data structures available for attributes, and *in general* you should expect to use them as you would learn in CompSci 101. In other words, use lists when ordering is important, use maps when your data is made of key-values and use sets to guarantee objects in your list are unique. However, data structures in Terraform do have their limitations.
 
-Maps can hold Ints, Booleans and Strings but **not** a combination of the three, as they might do in JSON, or in Go. They also cannot hold other maps, lists or sets. So they are constrained compared to maps in most languages. See [this issue](https://github.com/hashicorp/terraform/issues/6215) for more discussion of this. For those that don't want to read the whole thing, just note that these constraints are likely to change some time after [HCL2](https://github.com/hashicorp/hcl2) is introduced.
+Maps can hold Ints, Booleans and Strings but **not** a combination of the three, as they might do in JSON, or in Go. They also cannot hold other maps, lists or sets. So they are quite constrained, compared to maps in most languages. See [this issue](https://github.com/hashicorp/terraform/issues/6215) for more discussion of this. For those that don't want to read the whole thing, just note that these constraints are likely to change some time after [HCL2](https://github.com/hashicorp/hcl2) is introduced.
 
 When using a set, you should be aware that by default the items are hashed using all their attributes. This is so that objects dont get overwritten erroneously. You can override this using a custom HashFunc to enforce uniqueness by some key field. 
 
