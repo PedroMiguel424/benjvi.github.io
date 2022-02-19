@@ -1,55 +1,35 @@
-# although we are using HTTPProxy for ingress routing, 
-# Ingress object is still needed for integration with cert-manager
-apiVersion: networking.k8s.io/v1beta1
+---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: blog
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     ingress.kubernetes.io/force-ssl-redirect: "true"
     kubernetes.io/ingress.class: contour
-    # removing the ingress-class means this object is ignored by contour
     kubernetes.io/tls-acme: "true"
+  name: blog
 spec:
-  tls:
-    - hosts:
-      - bjv.me
-      - blog.pi.bjv.me
-      # This assumes tls-secret exists and the SSL
-      # certificate contains a CN for foo.bar.com
-      secretName: blog-tls-secret
   rules:
-    - host: blog.pi.bjv.me
-      http:
-        paths:
-        - backend:
-            # This assumes http-svc exists and routes to healthy endpoints
-            serviceName: blog
-            servicePort: 80
-    - host: bjv.me
-      http:
-        paths:
-        - backend:
-            # This assumes http-svc exists and routes to healthy endpoints
-            serviceName: blog
-            servicePort: 80
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: blog-open-ingress
-spec:
-  policyTypes:
-  - Ingress
-  - Egress
-  podSelector:
-    matchLabels:
-      run: blog
-  ingress:
-  - from:
-    - ipBlock:
-        cidr: 0.0.0.0/0
-    ports:
-    - protocol: TCP
-      port: 80
-  egress: []
+  - host: blog.pi.bjv.me
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: blog
+            port:
+              number: 80
+  - host: bjv.me
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: blog
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - bjv.me
+    - blog.pi.bjv.me
+    secretName: blog-tls-secret
