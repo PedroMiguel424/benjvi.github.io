@@ -6,7 +6,7 @@ image: ibelonghere.webp
 ---
 
 - This is the third Kubecon I’ve attended, the other two being in 2016 & 2017. This was quite different from both
-  - I have notes from Kubecon 2016 [here](http://benjvi.com/2016/03/13/tldr-kubecon) and a couple of sketch notes for talks in 2017: [1](https://twitter.com/bvkrs/status/847497893875503104?s=20)  - [2](https://twitter.com/bvkrs/status/848174735917764608?s=20)
+  - I have notes from Kubecon 2016 [here]({{site.url}}/2016/03/13/tldr-kubecon) and a couple of sketch notes for talks in 2017: [1](https://twitter.com/bvkrs/status/847497893875503104?s=20)  - [2](https://twitter.com/bvkrs/status/848174735917764608?s=20)
   - In 2016, things were about providing some basic features that people needed to adopt Kubernetes and get it to production
   - In 2017, most of the tools and approaches that people use to run a mature Kubernetes installation were already emerging: e.g. kubeadm, operators, Prometheus emerging as a project with momentum
 - As you'd expect, Kubecon was a massive conference. The ecosystem of cloud native products is also bigger then ever, so its not possible to pick up on every theme. You have to pick tracks to match your level of knowledge and your interest
