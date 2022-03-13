@@ -5,7 +5,10 @@ image: ibelonghere.webp
 
 <div class="content">
     <div class="postcontent">
-	<p>Welcome to my blog! I'm Ben. I'm a software developer focused on platform engineering & SRE, having diverted from becoming a physicist to a more "practical" profession. Mostly I write here about tech and pet projects.</p>
+        <div class="intro">
+	<p class="profile">Welcome to my blog! I'm Ben. I'm a software developer focused on platform engineering & SRE, having diverted from becoming a physicist to a more "practical" profession. Mostly I write here about tech and pet projects.</p>
+        <img src="{{site.url}}/img/profile.jpg" class="profile"/>
+        </div>
 	      {% for post in site.categories.technology %}
                 <p>
                   <em>{{ post.date | date: "%B %e, %Y" }}</em> - <a href="{{site.url}}{{ post.url }}">{{ post.title }}</a>

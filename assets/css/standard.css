@@ -111,20 +111,30 @@ header
 	color: var(--red-hover);
 }
 
-/* TODO: do I still want to use this? */
-img.profile
+.intro
 {
-	max-height:55px;
-	margin-left: 20px;
-	margin-right: 20px;	
-	vertical-align:middle;
-	border-radius: 5px;
+        display: flex;
+        flex-direction: row;
+}
+p.profile
+{
+        vertical-align: top;
+        margin-top: 1.7em;
+        flex-grow: 4;
 }
 
-img.profile:hover
+img.profile
 {
-	-webkit-filter: blur(1px);
+	max-height:140px;
+        max-width:140px;
+        flex-grow: 1;
+	margin-left: 20px;
+	margin-right: 20px;	
+        margin-top: 1.2em;
+        margin-bottom: 0em;
+	border-radius: 50%;
 }
+
 /* end : TODO */
 /* END STYLES: SITE-WIDE HEADER */
 
@@ -186,7 +196,7 @@ h4
 	font-size: 1.2em;
 }
 
-.postcontent img:not(.emoji)
+.postcontent img:not(.emoji) img:not(.profile)
 {
 	max-width: 96%;
         width: auto;
