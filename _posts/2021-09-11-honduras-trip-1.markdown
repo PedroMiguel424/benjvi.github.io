@@ -53,7 +53,7 @@ We had a quick breakfast of baleadas at the hotel. Baleadas are something close 
 
 After breakfast, we depart on the ferry. It's expensive by Honduran standards, at around $60 return. But, its modern and fast.
 
-Once on the island, we spend time relaxing on the beach at West End, and hand out until the sunset.
+Once on the island, we spend time relaxing on the beach at West End, and hang out until the sunset.
 
 ![beach at west end]({{site.url}}/img/hn/westend-beach.webp)
 ![sunset at west end]({{site.url}}/img/hn/westend-sunset.webp)
@@ -81,8 +81,7 @@ The one thing I did find strange on Little French Key was the sight of many crui
 
 This was the end of our time on Roatan. From there, we returned to the mainland and set off on another epic journey across the country to Copan.
 
-To be continued in part 2 ...  <!-- TODO: add link -->
-
+Continued in [part 2]({{site.url}}/2021/10/17/honduras-trip-pt2) ...  
 
 
 

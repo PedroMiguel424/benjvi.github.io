@@ -4,7 +4,9 @@ title: "Visiting Honduras II - Copan"
 categories: ["memorable-journeys"]
 ---
 
-Having exhausted our [time in Roatan]({{site.url}}/2021/09/11/honduras-trip-1), we set off in the morning on the ferry back to the mainland. On arrival back in La Ceiba, and being reunited with our trusty Toyota Camry, we stop off on the road out of the city at a Dunkin Donuts for breakfast. Ordinarily, I would not consider this to be noteworthy, but the Dunkin Donuts in Honduras uses 100% locally produced coffee. And its really the good stuff, nothing like the mediocrity I've drunk in other Dunkin Donuts. A perk of being in a coffee producing country.
+*Continued from [Part 1]({{site.url}}/2021/09/11/honduras-trip-1) ...*
+
+Having exhausted our time in Roatan, we set off in the morning on the ferry back to the mainland. On arrival back in La Ceiba, and being reunited with our trusty Toyota Corolla, we stop off on the road out of the city at a Dunkin Donuts for breakfast. Ordinarily, I would not consider this to be noteworthy, but the Dunkin Donuts in Honduras uses 100% locally produced coffee. And its really the good stuff, nothing like the mediocrity I've drunk in other Dunkin Donuts. A perk of being in a coffee producing country.
 
 On the way to La Ceiba from Tegucigalpa, we had driven along the main road to El Progreso and then took the coast road towards our hotel in La Ceiba:
 
@@ -63,5 +65,5 @@ Its really crazy to think that brown powder used to prepare our everyday drinks 
 
 After the tour finishes, and we try some of the delicious coffee, we return to the town of Copan Ruinas to dine and spend the evening relaxing. I didn't capture any photos of the town itself, which is a shame, as it's a charming little place with colonial-style architecture.
 
-Our visit to Copan was short but sweet! Tomorrow we will be travelling again back on the road to Tegucigalpa - that will come in the forthcoming Part 3.
+Our visit to Copan was short but sweet! Tomorrow we will be travelling again back on the road to Tegucigalpa - that will come in [part 3]({{site.url}}/2022/03/14/honduras-trip-3) ...
 

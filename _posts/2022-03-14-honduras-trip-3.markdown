@@ -4,6 +4,8 @@ title: "Visiting Honduras III - Return to Tegucigalpa"
 categories: ["memorable-journeys"]
 ---
 
+*Continued from [Part 1]({{site.url}}/2021/09/11/honduras-trip-1) & [Part 2]({{site.url}}/2021/10/17/honduras-trip-pt2) ...*
+
 To get back to Tegucigalpa from Copan Ruinas, it's a long drive through winding mountainous roads. 
 
 ![copan to tegus route]({{site.url}}/img/hn/tegus/route-copan-tegus.webp)
@@ -42,7 +44,7 @@ La Cumbre is one of the nicest fine-dining restaurants in Tegucigalpa, and a gre
 
 Tegucigalpa has a great many restaurants, and one of the things I've enjoyed most in subsequent trips is the variety of foods available.
 
-There local favourites like Baleadas and Pupusas, and other traditional dishes.
+There are local favourites like Baleadas and Pupusas, and other traditional dishes.
 <div style="display: flex; justify-content: center; width: 96%; margin-left: auto; margin-right: auto">
 <img class="inlineimg" src="{{site.url}}/img/hn/tegus/pupusas.webp" style="max-width: 49%"/>
 <img class="inlineimg" src="{{site.url}}/img/hn/tegus/coco-baleadas.webp" style="max-width: 49%"/>
@@ -106,6 +108,6 @@ And with that, all too quick, this memorable journey was over. The next day, I w
 <img class="inlineimg" src="{{site.url}}/img/hn/tegus/london-aerial.webp" style="max-width: 59%"/>
 </div>
 
-Although that was the end of this journey, by no means have I covered everything Honduras has to offer. Other destinations like the colonial city of Comayagua (near to the new airport La Palmerola), the smaller (more laid-back) island of Utila, and the more remote coastal town of Trujillo (where Christopher Colombus landed in Honduras) all have their own charms and are well worth exploring.
+Although that was the end of this journey, by no means have I covered everything Honduras has to offer. Other destinations like the colonial city of Comayagua (near to the new airport La Palmerola), the smaller (more laid-back) island of Utila, and the more remote coastal town of Trujillo (where Christopher Colombus arrived in Honduras and celebrated the first mass in America) all have their own charms and are well worth exploring.
 
 
