@@ -7,4 +7,4 @@ destination: _site
 url: http://192.168.1.60:31421
 plugins:
  - jemoji
-css_flavour: standard
+css_flavour: main

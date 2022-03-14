@@ -196,7 +196,7 @@ h4
 	font-size: 1.2em;
 }
 
-.postcontent img:not(.emoji) img:not(.profile)
+.postcontent img:not(.emoji):not(.profile)
 {
 	max-width: 96%;
         width: auto;
