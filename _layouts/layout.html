@@ -5,8 +5,8 @@
 	  <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="author" content="Benjamin Vickers" />
-		<link rel="stylesheet" type="text/css" href="{{site.url}}/assets/css/normalize.css" /> 
-		<link rel="stylesheet" type="text/css" href="{{site.url}}/assets/css/{{site.css_flavour}}.css" /> 
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/assets/css/normalize.css?{{ site.time | date: '%s%N' }}" /> 
+		<link rel="stylesheet" type="text/css" href="{{site.url}}/assets/css/{{site.css_flavour}}.css?{{ site.time | date: '%s%N' }}" /> 
 		<link rel="stylesheet" type="text/css" href='{{site.url}}/assets/css/nv.d3.css' /> 
 		<script src='{{site.url}}/assets/javascripts/d3.v3.js'></script>
 		<script src='{{site.url}}/assets/javascripts/nv.d3.js'></script>
