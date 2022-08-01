@@ -1,0 +1,11 @@
+FROM jekyll/jekyll:3.8
+
+COPY Gemfile /srv/jekyll
+COPY Gemfile.lock /srv/jekyll
+RUN bundle install --frozen
+
+RUN echo $PATH
+RUN which jekyll
+RUN export PATH=$PATH:/usr/gem/bin/
+RUN jekyll --version
+
