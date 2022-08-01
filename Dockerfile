@@ -1,4 +1,4 @@
-FROM benjvi:blog-builder as builder
+FROM benjvi/blog-builder as builder
 COPY . /srv/jekyll/
 RUN rm /srv/jekyll/robots.txt
 RUN rm /srv/jekyll/README.md
