@@ -18,7 +18,7 @@ There are a bunch of useful resources on how to get started with provider develo
 
 ## Writing The Schema
 
-### Types
+### Type Mapping
 
 When defining a new resource, the first step I take is to transcribe the fields from the API docs into a Terraform resource. The name of each Terraform attribute should generally be the same as the name of the object in the API (the convention in Terraform is to use camel-casing, which also typical in JSON). Since the types that the Terraform schema supports is more constrained than general datatypes in Go, we need to do some simple mapping:
   - Ints, Strings and Booleans map directly to the Terraform types `TypeInt`, `TypeString`, `TypeBool`
